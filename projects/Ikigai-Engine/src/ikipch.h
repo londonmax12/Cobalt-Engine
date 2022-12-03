@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Logging/Logging.h"
+#include "Logging/Assert.h"
 #include "Platforms/PlatformDetection.h"
 #include "Math/Math.h"
 

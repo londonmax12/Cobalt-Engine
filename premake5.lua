@@ -78,14 +78,17 @@ workspace "Ikigai"
             }
 
             filter "configurations:Debug"
+                defines "IKIGAI_DEBUG_MODE"
                 buildoptions "/MDd"
                 symbols "on"
 
             filter "configurations:Release"
+                defines "IKIGAI_RELEASE_MODE"
                 buildoptions "/MD"
                 optimize "on"
 
             filter "configurations:Distribution"
+                defines "IKIGAI_DISTRIBUTION_MODE"
                 buildoptions "/MD"
                 optimize "on"
             

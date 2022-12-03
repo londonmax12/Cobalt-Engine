@@ -22,4 +22,9 @@ void main() {
 
 	IKIGAI_DEBUG("");
 	IKIGAI_DEBUG("This is a 3D Vertex: {}", point);
+
+	int a = 2;
+	int b = 4;
+
+	IKIGAI_DEBUG_ASSERT(false);
 }
