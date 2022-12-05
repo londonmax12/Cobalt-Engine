@@ -88,7 +88,7 @@ void Ikigai::Platform::Init()
 	QueryPerformanceCounter(&g_StartTime);
 }
 
-bool Ikigai::Platform::Startup(PlatformState* state, const char* applicationName, Vector2 position, Vector2 size)
+bool Ikigai::Platform::Startup(PlatformState* state, const char* applicationName, int positionX, int positionY, int width, int height)
 {
 	state->internalState = malloc(sizeof(WindowsInternalState));
 	WindowsInternalState* internalState = (WindowsInternalState*)state->internalState;
@@ -115,10 +115,10 @@ bool Ikigai::Platform::Startup(PlatformState* state, const char* applicationName
 		return false;
 	}
 
-	int cX = position.x;
-	int cY = position.y;
-	int cW = size.x;
-	int cH = size.y;
+	int cX = positionX;
+	int cY = positionY;
+	int cW = width;
+	int cH = height;
 
 	int wX = cX;
 	int wY = cY;
@@ -150,8 +150,8 @@ bool Ikigai::Platform::Startup(PlatformState* state, const char* applicationName
 	}
 
 	IKIGAI_INFO("Created Win32 window ({})", applicationName);
-	IKIGAI_INFO("\t| Pos: {}", position);
-	IKIGAI_INFO("\t| Size: {}", size);
+	IKIGAI_INFO("\t| Pos: {}", Vector2(positionX, positionY));
+	IKIGAI_INFO("\t| Size: {}", Vector2(width, height));
 
 	internalState->hwnd = handle;
 

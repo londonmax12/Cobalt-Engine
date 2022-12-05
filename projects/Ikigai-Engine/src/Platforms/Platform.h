@@ -1,4 +1,7 @@
 #pragma once
+#include "Math/Vector.h"
+
+#include <stdint.h>
 
 namespace Ikigai {
 	namespace Platform
@@ -9,7 +12,7 @@ namespace Ikigai {
 		};
 		void Init();
 
-		bool Startup(PlatformState* state, const char* applicationName, Vector2 position, Vector2 size);
+		bool Startup(PlatformState* state, const char* applicationName, int positionX, int positionY, int width, int height);
 		void Shutdown(PlatformState* state);
 
 		bool PumpMessages(PlatformState* state);

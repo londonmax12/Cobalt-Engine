@@ -1,18 +1,18 @@
 #include "Ikigai.h"
 
-void main() {
-	Ikigai::Logging::Init();
-	IKIGAI_INFO("Initialized logging system");
-
-	Ikigai::Platform::Init();
-	IKIGAI_INFO("Initialized platform layer");
-
-	Ikigai::Platform::PlatformState state{};
-	IKIGAI_ASSERT_MSG(Ikigai::Platform::Startup(&state, "Sandbox", {30, 30}, {1000, 700}), "Failed to start application!");
-	IKIGAI_INFO("Created platform application");
-
-	while (Ikigai::Platform::PumpMessages(&state)) {
-
+class SandboxApp : Ikigai::Application {
+public:
+	SandboxApp() {
+		Ikigai::ApplicationConfig config = Ikigai::ApplicationConfig::createConfig();
+		config.ApplicationName = "Sandbox";
+		Init(config);
 	}
-	Ikigai::Platform::Shutdown(&state);
+	void Begin() {
+		Run();
+	}
+};
+
+void main() {
+	SandboxApp app = SandboxApp();
+	app.Begin();
 }
