@@ -129,10 +129,10 @@ namespace Ikigai {
 			sprintf_s(outMsg, msgSize, "[%s]\t%s: %s\n", str[(int)level], name, std::vformat(msg, std::make_format_args(args...)).c_str());
 
 			if (isError) {
-				platform_ConsoleWriteError(outMsg, level);
+				Platform::ConsoleWriteError(outMsg, level);
 			}
 			else {
-				platform_ConsoleWrite(outMsg, level);
+				Platform::ConsoleWrite(outMsg, level);
 			}
 		};
 	private:

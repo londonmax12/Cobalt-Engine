@@ -6,7 +6,7 @@ namespace Ikigai {
 	int Random::RandInt()
 	{
 		if (m_RandomSeeded) {
-			srand((uint32_t)platform_GetAbsTime());
+			srand((uint32_t)Platform::GetAbsTime());
 			m_RandomSeeded = true;
 		}
 		return rand();
@@ -14,7 +14,7 @@ namespace Ikigai {
 	int Random::RandInt(int min, int max)
 	{
 		if (m_RandomSeeded) {
-			srand((uint32_t)platform_GetAbsTime());
+			srand((uint32_t)Platform::GetAbsTime());
 			m_RandomSeeded = true;
 		}
 		return (rand() % (max - min + 1)) + min;

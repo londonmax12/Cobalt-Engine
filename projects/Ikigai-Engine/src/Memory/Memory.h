@@ -10,8 +10,6 @@ namespace Ikigai {
 		MEMORYMAXTYPES,
 	};
 	
-
-
 	class Memory {
 	private:
 		struct MemoryStats {
@@ -23,15 +21,16 @@ namespace Ikigai {
 
 		static const char* MemoryTypeToString(MemoryType type);
 	public:
-		static void MemInit();
-		static void MemShutdown();
+		static void Init();
+		static void Shutdown();
 
-		static void* MemAllocate(uint64_t size, MemoryType type);
-		static void MemFree(void* block, uint64_t size, MemoryType type);
-		static void* MemZeroMemory(void* block, uint64_t size);
-		static void* MemCopyMemory(void* dest, const void* source, uint64_t size);
-		static void* MemSetMemory(void* dest, int32_t value, uint64_t size);
+		static void* Allocate(uint64_t size, MemoryType type);
+		static void Free(void* block, uint64_t size, MemoryType type);
+		static void* Zero(void* block, uint64_t size);
+		static void* Copy(void* dest, const void* source, uint64_t size);
+		static void* Set(void* dest, int32_t value, uint64_t size);
 
 		static char* PrintPerformance();
+
 	};
 }

@@ -21,7 +21,7 @@ namespace Ikigai {
 				data[15] = 1.0f;
 				return;
 			}
-			Memory::MemZeroMemory(data, sizeof(float) * 16);
+			Memory::Zero(data, sizeof(float) * 16);
 		}
 
 		static Matrix4x4 OrthographicMatrix(float left, float right, float bottom, float top, float nearClip, float farClip);

@@ -16,45 +16,45 @@ const char* Ikigai::Memory::MemoryTypeToString(MemoryType type)
 	}
 }
 
-void Ikigai::Memory::MemInit()
+void Ikigai::Memory::Init()
 {
 }
 
-void Ikigai::Memory::MemShutdown()
+void Ikigai::Memory::Shutdown()
 {
 }
 
-void* Ikigai::Memory::MemAllocate(uint64_t size, MemoryType type)
+void* Ikigai::Memory::Allocate(uint64_t size, MemoryType type)
 {
 	m_Stats.total += size;
 	m_Stats.typeAllocations[type] += size;
 
-	void* block = platform_Allocate(size, false);
-	platform_ZeroMemory(block, size);
+	void* block = Platform::Allocate(size, false);
+	Platform::ZeroMem(block, size);
 	return block;
 }
 
-void Ikigai::Memory::MemFree(void* block, uint64_t size, MemoryType type)
+void Ikigai::Memory::Free(void* block, uint64_t size, MemoryType type)
 {
 	m_Stats.total -= size;
 	m_Stats.typeAllocations[type] -= size;
 
-	platform_Free(block, false);
+	Platform::Free(block, false);
 }
 
-void* Ikigai::Memory::MemZeroMemory(void* block, uint64_t size)
+void* Ikigai::Memory::Zero(void* block, uint64_t size)
 {
-	return platform_ZeroMemory(block, size);
+	return Platform::ZeroMem(block, size);
 }
 
-void* Ikigai::Memory::MemCopyMemory(void* dest, const void* source, uint64_t size)
+void* Ikigai::Memory::Copy(void* dest, const void* source, uint64_t size)
 {
-	return platform_CopyMemory(dest, source, size);
+	return Platform::CopyMem(dest, source, size);
 }
 
-void* Ikigai::Memory::MemSetMemory(void* dest, int32_t value, uint64_t size)
+void* Ikigai::Memory::Set(void* dest, int32_t value, uint64_t size)
 {
-	return platform_SetMemory(dest, value, size);
+	return Platform::SetMem(dest, value, size);
 }
 
 char* Ikigai::Memory::PrintPerformance()
@@ -89,3 +89,18 @@ char* Ikigai::Memory::PrintPerformance()
 	IKIGAI_INFO("=================================");
 	return nullptr;
 }
+
+//void* Ikigai::Memory::ZeroMemory(void* block, uint64_t size)
+//{
+//	return Platform::ZeroMem(block, size);
+//}
+//
+//void* Ikigai::Memory::CopyMemory(void* dest, const void* source, uint64_t size)
+//{
+//	return Platform::CopyMem(dest, source, size);
+//}
+//
+//void* Ikigai::Memory::SetMemory(void* dest, int32_t value, uint64_t size)
+//{
+//	return Platform::SetMem(dest, value, size);
+//}
