@@ -32,4 +32,7 @@ namespace Ikigai {
 		int m_Width;
 		int m_Height;
 	};
+
+	// Defined by client not engine
+	Application* CreateApplication();
 }

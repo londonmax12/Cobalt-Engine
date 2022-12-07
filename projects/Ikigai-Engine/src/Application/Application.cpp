@@ -4,8 +4,8 @@
 Ikigai::ApplicationConfig Ikigai::ApplicationConfig::createConfig()
 {
 	ApplicationConfig conf = ApplicationConfig();
-	conf.PositionX = 0;
-	conf.PositionY = 0;
+	conf.PositionX = 40;
+	conf.PositionY = 40;
 	conf.Width = 1600;
 	conf.Height = 900;
 	conf.ApplicationName = "Ikigai Application";
@@ -18,12 +18,6 @@ bool Ikigai::Application::Init(ApplicationConfig config)
 		IKIGAI_ASSERT_MSG(false, "Ikigai application already exists");
 		return false;
 	}
-
-	Ikigai::Logging::Init();
-	IKIGAI_INFO("Initialized logging system");
-
-	Ikigai::Platform::Init();
-	IKIGAI_INFO("Initialized platform layer");
 
 	Ikigai::Platform::PlatformState state{};
 	bool success = Ikigai::Platform::Startup(&state, config.ApplicationName, config.PositionX, config.PositionY, config.Width, config.Height);
