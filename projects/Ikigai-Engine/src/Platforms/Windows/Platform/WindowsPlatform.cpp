@@ -35,7 +35,7 @@ namespace Ikigai {
 			GetClientRect(hwnd, &r);
 			int width = r.right - r.left;
 			int height = r.bottom - r.top;
-			EventSystem::PushEvent(new SurfaceResizeEvent(width, height));
+			EventSystem::PushEvent(CreateRef<SurfaceResizeEvent>(width, height));
 			break;
 		}
 

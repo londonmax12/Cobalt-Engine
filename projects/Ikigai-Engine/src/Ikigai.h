@@ -5,6 +5,7 @@
 
 // APPLICATION
 #include "Application/Application.h"
+#include "Application/Core.h"
 
 // LOGGING
 #include "Logging/Logging.h"

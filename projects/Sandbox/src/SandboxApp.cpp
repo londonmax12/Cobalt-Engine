@@ -1,7 +1,7 @@
 #include "Ikigai.h"
 
-bool ResizeEvent(Ikigai::Event* ev) {
-	Ikigai::SurfaceResizeEvent* resizeEvent = (Ikigai::SurfaceResizeEvent*)ev;
+bool ResizeEvent(Ikigai::Ref<Ikigai::Event> ev) {
+	Ikigai::SurfaceResizeEvent* resizeEvent = (Ikigai::SurfaceResizeEvent*)ev.get();
 	IKIGAI_DEBUG("Resize! {}, {}", resizeEvent->Width, resizeEvent->Height);
 	return true;
 }

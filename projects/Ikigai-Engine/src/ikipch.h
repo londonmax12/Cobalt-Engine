@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Application/Core.h"
 #include "Logging/Logging.h"
 #include "Logging/Assert.h"
 #include "Platforms/PlatformDetection.h"
