@@ -2,6 +2,12 @@
 #include "Application.h"
 #include "Event/Event.h"
 
+bool AppCloseCallback(Ikigai::Ref<Ikigai::Event> ev)
+{
+	Ikigai::Application::GetInstance()->m_Running = false;
+	return true;
+}
+
 Ikigai::ApplicationConfig Ikigai::ApplicationConfig::createConfig()
 {
 	ApplicationConfig conf = ApplicationConfig();
@@ -27,6 +33,9 @@ bool Ikigai::Application::Init(ApplicationConfig config)
 		return false;
 
 	IKIGAI_INFO("Created platform application");
+
+	EventSystem::Register(EventListener(EVENTTYPE_APPLICATION_CLOSE, &AppCloseCallback));
+	IKIGAI_INFO("Created application event listeners");
 
 	m_State = &state;
 

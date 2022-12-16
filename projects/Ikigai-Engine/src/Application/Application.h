@@ -1,5 +1,6 @@
 #pragma once
 #include "Platforms/Platform.h"
+#include "Core.h"
 
 namespace Ikigai {
 	struct ApplicationConfig {
@@ -18,12 +19,12 @@ namespace Ikigai {
 	public:
 		bool Init(ApplicationConfig config);
 		void Run();
-
+		bool m_Running = false;
 		static Application* GetInstance() { return m_Instance; }
 	private:
 		inline static Application* m_Instance = nullptr;
 
-		bool m_Running = false;
+	
 
 		bool m_Suspended = false;
 

@@ -5,6 +5,8 @@
 #include "Platforms/Windows/WindowsStructs.h"
 
 #include "Event/SurfaceEvents.h"
+#include "Event/ApplicationEvents.h"
+#include "Event/MouseEvents.h"
 
 namespace Ikigai {
 	static double g_ClockFrequency;
@@ -20,13 +22,15 @@ namespace Ikigai {
 
 		case WM_CLOSE:
 		{
-			return 0;
+			EventSystem::PushEvent(CreateRef<ApplicationCloseEvent>());
+			return 1;
 		}
 
 		case WM_DESTROY:
 		{
+			EventSystem::PushEvent(CreateRef<ApplicationCloseEvent>());
 			PostQuitMessage(0);
-			return 0;
+			return 1;
 		}
 
 		case WM_SIZE:
@@ -62,17 +66,39 @@ namespace Ikigai {
 			if (zDelta != 0) {
 				zDelta = (zDelta < 0) ? -1 : 1;
 			}
+			
+			EventSystem::PushEvent(CreateRef<MouseScrollEvent>(zDelta));
 			break;
 		}
 
 		case WM_LBUTTONDOWN:
+		{
+			EventSystem::PushEvent(CreateRef<MouseDownEvent>(0));
+			break;
+		}
 		case WM_RBUTTONDOWN:
+		{
+			EventSystem::PushEvent(CreateRef<MouseDownEvent>(2));
+			break;
+		}
 		case WM_MBUTTONDOWN:
+		{
+			EventSystem::PushEvent(CreateRef<MouseDownEvent>(1));
+			break;
+		}
 		case WM_LBUTTONUP:
+		{
+			EventSystem::PushEvent(CreateRef<MouseUpEvent>(0));
+			break;
+		}
 		case WM_RBUTTONUP:
+		{
+			EventSystem::PushEvent(CreateRef<MouseUpEvent>(2));
+			break;
+		}
 		case WM_MBUTTONUP:
 		{
-			bool pressed = (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN);
+			EventSystem::PushEvent(CreateRef<MouseUpEvent>(1));
 			break;
 		}
 
@@ -171,7 +197,6 @@ void Ikigai::Platform::Shutdown(PlatformState* state)
 	WindowsInternalState* internalState = (WindowsInternalState*)state->internalState;
 	if (internalState->hwnd) {
 		DestroyWindow(internalState->hwnd);
-		internalState->hwnd = 0;
 	}
 }
 
