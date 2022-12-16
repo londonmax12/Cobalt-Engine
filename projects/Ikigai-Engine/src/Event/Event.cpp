@@ -19,17 +19,18 @@ void Ikigai::EventSystem::Unregister(EventListener listener)
 	m_Listeners[listener.m_EventType].erase(m_Listeners[listener.m_EventType].begin() + index);
 }
 
-void Ikigai::EventSystem::PushEvent(Event ev)
+void Ikigai::EventSystem::PushEvent(Event* ev)
 {
 	m_Events.push_back(ev);
 }
 
 void Ikigai::EventSystem::PollEvents()
 {
-	for (Event& ev : m_Events) {
-		for (auto& listener : m_Listeners[ev.m_Type]) {
+	for (Event* ev : m_Events) {
+		for (auto& listener : m_Listeners[ev->m_Type]) {
 			(*listener.m_Callback)(ev);
 		}
+		delete ev;
 		m_Events.erase(m_Events.begin());
 	}
 	m_Events.clear();

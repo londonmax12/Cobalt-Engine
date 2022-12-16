@@ -1,10 +1,13 @@
+#pragma once
 #include <vector>
 #include <unordered_map>
 
 namespace Ikigai {
 	enum EventType {
-		EVENTTYPE_KEYPRESS, EVENTTYPE_KEYDOWN, EVENTTYPE_KEYUP, EVENTTYPE_MOUSECLICK, EVENTTYPE_MOUSEDOWN, EVENTTYPE_MOUSEUP,
-		EVENTTYPE_WINDOW_RESIZE, EVENTTYPE_WINDOW_CLOSE
+		EVENTTYPE_KEYPRESS, EVENTTYPE_KEYDOWN, EVENTTYPE_KEYUP, 
+		EVENTTYPE_MOUSECLICK, EVENTTYPE_MOUSEDOWN, EVENTTYPE_MOUSEUP,
+		EVENTTYPE_SURFACE_RESIZE, 
+		EVENTTYPE_APPLICATION_CLOSE
 	};
 
 	class EventSystem;
@@ -18,7 +21,7 @@ namespace Ikigai {
 		friend EventSystem;
 	};
 
-	typedef bool (*EventCallback)(Event& e);
+	typedef bool (*EventCallback)(Event* e);
 
 
 	class EventListener {
@@ -36,13 +39,13 @@ namespace Ikigai {
 		static void Register(EventListener listener);
 		static void Unregister(EventListener listener);
 
-		static void PushEvent(Event ev);
+		static void PushEvent(Event* ev);
 
 		static void PollEvents();
 
 		static void Shutdown();
 	private:
-		static inline std::vector<Event> m_Events;
+		static inline std::vector<Event*> m_Events;
 		static inline std::unordered_map<EventType, std::vector<EventListener>> m_Listeners;
 	};
 }

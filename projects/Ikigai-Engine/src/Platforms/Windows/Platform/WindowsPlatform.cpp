@@ -4,7 +4,7 @@
 #include "Platforms/Platform.h"
 #include "Platforms/Windows/WindowsStructs.h"
 
-#include "Event/Event.h"
+#include "Event/SurfaceEvents.h"
 
 namespace Ikigai {
 	static double g_ClockFrequency;
@@ -35,7 +35,7 @@ namespace Ikigai {
 			GetClientRect(hwnd, &r);
 			int width = r.right - r.left;
 			int height = r.bottom - r.top;
-			EventSystem::PushEvent(Event(EVENTTYPE_WINDOW_RESIZE));
+			EventSystem::PushEvent(new SurfaceResizeEvent(width, height));
 			break;
 		}
 

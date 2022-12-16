@@ -1,7 +1,8 @@
 #include "Ikigai.h"
 
-bool ResizeEvent(Ikigai::Event& ev) {
-	IKIGAI_DEBUG("Resize!");
+bool ResizeEvent(Ikigai::Event* ev) {
+	Ikigai::SurfaceResizeEvent* resizeEvent = (Ikigai::SurfaceResizeEvent*)ev;
+	IKIGAI_DEBUG("Resize! {}, {}", resizeEvent->Width, resizeEvent->Height);
 	return true;
 }
 
@@ -12,8 +13,7 @@ public:
 		config.ApplicationName = "Sandbox";
 		Init(config);
 
-		Ikigai::EventListener windowResizeEvent{ Ikigai::EVENTTYPE_WINDOW_RESIZE, &ResizeEvent };
-		Ikigai::EventListener windowResizeEvent1{ Ikigai::EVENTTYPE_WINDOW_RESIZE, &ResizeEvent1 };
+		Ikigai::EventListener windowResizeEvent{ Ikigai::EVENTTYPE_SURFACE_RESIZE, &ResizeEvent };
 		Ikigai::EventSystem::Register(windowResizeEvent);	
 		//Ikigai::EventSystem::Unregister(windowResizeEvent);	
 	}
@@ -21,4 +21,4 @@ public:
 
 Ikigai::Application* Ikigai::CreateApplication() {
 	return new SandboxApp();
-} 
+}
