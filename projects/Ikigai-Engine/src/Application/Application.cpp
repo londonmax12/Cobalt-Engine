@@ -1,5 +1,6 @@
 #include "ikipch.h"
 #include "Application.h"
+#include "Event/Event.h"
 
 Ikigai::ApplicationConfig Ikigai::ApplicationConfig::createConfig()
 {
@@ -39,7 +40,11 @@ void Ikigai::Application::Run()
 {
 	while (m_Running) {
 		if (!Ikigai::Platform::PumpMessages(m_State))
-			m_Running = false;		
+			m_Running = false;
+		EventSystem::PollEvents();
 	}
 	Ikigai::Platform::Shutdown(m_State);
+
+
+	EventSystem::Shutdown();
 }

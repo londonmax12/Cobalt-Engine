@@ -4,6 +4,8 @@
 #include "Platforms/Platform.h"
 #include "Platforms/Windows/WindowsStructs.h"
 
+#include "Event/Event.h"
+
 namespace Ikigai {
 	static double g_ClockFrequency;
 	static LARGE_INTEGER g_StartTime;
@@ -33,6 +35,7 @@ namespace Ikigai {
 			GetClientRect(hwnd, &r);
 			int width = r.right - r.left;
 			int height = r.bottom - r.top;
+			EventSystem::PushEvent(Event(EVENTTYPE_WINDOW_RESIZE));
 			break;
 		}
 

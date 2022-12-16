@@ -1,5 +1,8 @@
 // IKIGAI ENGINE
 
+// ENTRY
+#include "Application/Entry.h"
+
 // APPLICATION
 #include "Application/Application.h"
 
@@ -9,3 +12,6 @@
 
 // PLATFORM RELATED
 #include "Platforms/Platform.h"
+
+// EVENTS
+#include "Event/Event.h"
