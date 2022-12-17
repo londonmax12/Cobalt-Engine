@@ -1,6 +1,7 @@
 #pragma once
 #include "Platforms/Platform.h"
 #include "Core.h"
+#include "Event/ApplicationEvents.h"
 
 namespace Ikigai {
 	struct ApplicationConfig {
@@ -19,13 +20,14 @@ namespace Ikigai {
 	public:
 		bool Init(ApplicationConfig config);
 		void Run();
-		bool m_Running = false;
 		static Application* GetInstance() { return m_Instance; }
+
 	private:
 		inline static Application* m_Instance = nullptr;
 
-	
+		static bool AppCloseCallback(Ikigai::Ref<Ikigai::Event> ev);
 
+		bool m_Running = false;
 		bool m_Suspended = false;
 
 		Platform::PlatformState* m_State;
