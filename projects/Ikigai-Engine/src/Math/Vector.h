@@ -9,6 +9,8 @@ namespace Ikigai {
 		Vector2();
 		Vector2(float scalar);
 		Vector2(float x, float y);
+		Vector2(int scalar);
+		Vector2(int x, int y);
 
 		static Vector2 Zero();
 		static Vector2 One();
@@ -113,6 +115,8 @@ namespace Ikigai {
 		Vector3();
 		Vector3(float scalar);
 		Vector3(float x, float y, float z);
+		Vector3(int scalar);
+		Vector3(int x, int y, int z);
 
 		static Vector3 Zero();
 		static Vector3 One();
@@ -243,7 +247,7 @@ namespace Ikigai {
 			);
 		}
 		bool operator== (Vector3 a) {
-			return Compare(a, 0.01);
+			return Compare(a, 0.01f);
 		}
 	};
 	typedef Vector3 EulerAngle;
@@ -390,7 +394,7 @@ namespace Ikigai {
 			);
 		}
 		bool operator== (Vector4 a) {
-			return Compare(a, 0.01);
+			return Compare(a, 0.01f);
 		}
 
 	};

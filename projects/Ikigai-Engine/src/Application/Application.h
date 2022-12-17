@@ -30,10 +30,10 @@ namespace Ikigai {
 		bool m_Running = false;
 		bool m_Suspended = false;
 
-		Platform::PlatformState* m_State;
+		Platform::PlatformState* m_State = nullptr;
 
-		int m_Width;
-		int m_Height;
+		int m_Width = 0;
+		int m_Height = 0;
 	};
 
 	// Defined by client not engine

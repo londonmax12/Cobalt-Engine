@@ -122,6 +122,9 @@ bool Ikigai::Platform::Startup(PlatformState* state, const char* applicationName
 	state->internalState = malloc(sizeof(WindowsInternalState));
 	WindowsInternalState* internalState = (WindowsInternalState*)state->internalState;
 
+	if (internalState == nullptr)
+		return false;
+
 	internalState->hInstance = GetModuleHandleA(0);
 
 	HICON icon = LoadIcon(internalState->hInstance, IDI_APPLICATION);
@@ -233,7 +236,7 @@ void Ikigai::Platform::ConsoleWrite(const char* msg, int color) {
 	static int levels[6] = { 8, 1, 7, 6, 4, 12 };
 	SetConsoleTextAttribute(consoleHandle, levels[color]);
 	OutputDebugStringA(msg);
-	uint32_t len = strlen(msg);
+	size_t len = strlen(msg);
 	LPDWORD numberWritten = 0;
 	WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), msg, (DWORD)len, numberWritten, 0);
 }
@@ -242,7 +245,7 @@ void Ikigai::Platform::ConsoleWriteError(const char* msg, int color) {
 	static int levels[6] = { 8, 1, 7, 6, 4, 12 };
 	SetConsoleTextAttribute(consoleHandle, levels[color]);
 	OutputDebugStringA(msg);
-	uint32_t len = strlen(msg);
+	size_t len = strlen(msg);
 	LPDWORD numberWritten = 0;
 	WriteConsoleA(GetStdHandle(STD_ERROR_HANDLE), msg, (DWORD)len, numberWritten, 0);
 }
@@ -252,6 +255,6 @@ double Ikigai::Platform::GetAbsTime() {
 	return (double)timeNow.QuadPart * g_ClockFrequency;
 }
 void Ikigai::Platform::Sleep(int ms) {
-	Sleep(ms);
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 #endif

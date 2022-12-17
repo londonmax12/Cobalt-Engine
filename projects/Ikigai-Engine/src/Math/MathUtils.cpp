@@ -5,10 +5,10 @@
 
 float Ikigai::Math::Deg2Rad(float degrees)
 {
-	return degrees * DEG2RAD_MULT;
+	return (float)(degrees * DEG2RAD_MULT);
 }
 
 float Ikigai::Math::Rad2Deg(float radians)
 {
-	return radians * RAD2DEG_MULT;
+	return (float)(radians * RAD2DEG_MULT);
 }

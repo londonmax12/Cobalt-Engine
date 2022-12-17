@@ -24,7 +24,7 @@ void Ikigai::Memory::Shutdown()
 {
 }
 
-void* Ikigai::Memory::Allocate(uint64_t size, MemoryType type)
+void* Ikigai::Memory::Allocate(uint32_t size, MemoryType type)
 {
 	m_Stats.total += size;
 	m_Stats.typeAllocations[type] += size;
@@ -34,7 +34,7 @@ void* Ikigai::Memory::Allocate(uint64_t size, MemoryType type)
 	return block;
 }
 
-void Ikigai::Memory::Free(void* block, uint64_t size, MemoryType type)
+void Ikigai::Memory::Free(void* block, uint32_t size, MemoryType type)
 {
 	m_Stats.total -= size;
 	m_Stats.typeAllocations[type] -= size;
@@ -42,26 +42,26 @@ void Ikigai::Memory::Free(void* block, uint64_t size, MemoryType type)
 	Platform::Free(block, false);
 }
 
-void* Ikigai::Memory::Zero(void* block, uint64_t size)
+void* Ikigai::Memory::Zero(void* block, uint32_t size)
 {
 	return Platform::ZeroMem(block, size);
 }
 
-void* Ikigai::Memory::Copy(void* dest, const void* source, uint64_t size)
+void* Ikigai::Memory::Copy(void* dest, const void* source, uint32_t size)
 {
 	return Platform::CopyMem(dest, source, size);
 }
 
-void* Ikigai::Memory::Set(void* dest, int32_t value, uint64_t size)
+void* Ikigai::Memory::Set(void* dest, int32_t value, uint32_t size)
 {
 	return Platform::SetMem(dest, value, size);
 }
 
 char* Ikigai::Memory::PrintPerformance()
 {
-	const uint64_t kb = 1024;
-	const uint64_t mb = 1048576;
-	const uint64_t gb = 1073741824;
+	const float kb = 1024.f;
+	const float mb = 1048576.f;
+	const float gb = 1073741824.f;
 
 	IKIGAI_INFO("====== System Memory Usage ======");
 	for (int i = 0; i < MEMORYMAXTYPES; i++) {
@@ -80,7 +80,7 @@ char* Ikigai::Memory::PrintPerformance()
 			amount = m_Stats.typeAllocations[i] / gb;
 		}
 		else {
-			amount = m_Stats.typeAllocations[i];
+			amount = (float)m_Stats.typeAllocations[i];
 		}
 		const char* label = MemoryTypeToString((MemoryType)i);
 		IKIGAI_INFO("%s%f", label, amount);

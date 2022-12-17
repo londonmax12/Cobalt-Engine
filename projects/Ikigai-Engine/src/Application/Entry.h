@@ -6,7 +6,7 @@
 
 extern Ikigai::Application* Ikigai::CreateApplication();
 
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
 	Ikigai::Logging::Init();
 	IKIGAI_INFO("Initialized logging system");
 

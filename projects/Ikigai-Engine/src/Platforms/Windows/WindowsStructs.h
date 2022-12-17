@@ -4,7 +4,7 @@
 
 namespace Ikigai {
 	struct WindowsInternalState {
-		HINSTANCE hInstance;
-		HWND hwnd;
+		HINSTANCE hInstance = nullptr;
+		HWND hwnd = nullptr;
 	};
 }

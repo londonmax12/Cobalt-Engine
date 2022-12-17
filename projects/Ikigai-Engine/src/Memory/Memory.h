@@ -24,11 +24,11 @@ namespace Ikigai {
 		static void Init();
 		static void Shutdown();
 
-		static void* Allocate(uint64_t size, MemoryType type);
-		static void Free(void* block, uint64_t size, MemoryType type);
-		static void* Zero(void* block, uint64_t size);
-		static void* Copy(void* dest, const void* source, uint64_t size);
-		static void* Set(void* dest, int32_t value, uint64_t size);
+		static void* Allocate(uint32_t size, MemoryType type);
+		static void Free(void* block, uint32_t size, MemoryType type);
+		static void* Zero(void* block, uint32_t size);
+		static void* Copy(void* dest, const void* source, uint32_t size);
+		static void* Set(void* dest, int32_t value, uint32_t size);
 
 		static char* PrintPerformance();
 

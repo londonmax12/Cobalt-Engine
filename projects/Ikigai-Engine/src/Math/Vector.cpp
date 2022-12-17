@@ -7,17 +7,29 @@ namespace Ikigai {
 		x = 0.f;
 		y = 0.f;
 	}
+
 	Vector2::Vector2(float scalar)
 	{
 		x = scalar;
 		y = scalar;
 	}
 
-
 	Vector2::Vector2(float X, float Y)
 	{
 		x = X;
 		y = Y;
+	}
+
+	Vector2::Vector2(int scalar)
+	{
+		x = (float)scalar;
+		y = (float)scalar;
+	}
+
+	Vector2::Vector2(int X, int Y)
+	{
+		x = (float)X;
+		y = (float)Y;
 	}
 
 	Vector2 Vector2::Zero()
@@ -49,6 +61,20 @@ namespace Ikigai {
 		x = X;
 		y = Y;
 		z = Z;
+	}
+
+	Vector3::Vector3(int scalar)
+	{
+		x = (float)scalar;
+		y = (float)scalar;
+		z = (float)scalar;
+	}
+
+	Vector3::Vector3(int X, int Y, int Z)
+	{
+		x = (float)X;
+		y = (float)Y;
+		z = (float)Z;
 	}
 
 	Vector3 Vector3::Zero()

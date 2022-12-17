@@ -20,25 +20,25 @@
 #define IKIGAI_FATAL(message, ...) Ikigai::Logging::GetCoreLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_FATAL, message, ##__VA_ARGS__)
 #define IKIGAI_ERROR(message, ...) Ikigai::Logging::GetCoreLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_ERROR, message, ##__VA_ARGS__)
 
-#ifdef LOG_WARN_ENABLED == 1
+#if LOG_WARN_ENABLED == 1
 #define IKIGAI_WARN(message, ...) Ikigai::Logging::GetCoreLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_WARN, message, ##__VA_ARGS__)
 #else
 #define IKIGAI_WARN(message, ...)
 #endif
 
-#ifdef LOG_INFO_ENABLED == 1
+#if LOG_INFO_ENABLED == 1
 #define IKIGAI_INFO(message, ...) Ikigai::Logging::GetCoreLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_INFO, message, ##__VA_ARGS__)
 #else
 #define IKIGAI_INFO(message, ...)
 #endif
 
-#ifdef LOG_DEBUG_ENABLED == 1
+#if LOG_DEBUG_ENABLED == 1
 #define IKIGAI_DEBUG(message, ...) Ikigai::Logging::GetCoreLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_DEBUG, message, ##__VA_ARGS__)
 #else
 #define IKIGAI_DEBUG(message, ...)
 #endif
 
-#ifdef LOG_TRACE_ENABLED == 1
+#if LOG_TRACE_ENABLED == 1
 #define IKIGAI_TRACE(message, ...) Ikigai::Logging::GetCoreLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_TRACE, message, ##__VA_ARGS__)
 #else
 #define IKIGAI_TRACE(message, ...)
@@ -47,25 +47,25 @@
 #define IKIGAI_FATAL_CLIENT(message, ...) Ikigai::Logging::GetClientLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_FATAL, message, ##__VA_ARGS__)
 #define IKIGAI_ERROR_CLIENT(message, ...) Ikigai::Logging::GetClientLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_ERROR, message, ##__VA_ARGS__)
 
-#ifdef LOG_WARN_ENABLED == 1
+#if LOG_WARN_ENABLED == 1
 #define IKIGAI_WARN_CLIENT(message, ...) Ikigai::Logging::GetClientLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_WARN, message, ##__VA_ARGS__)
 #else
 #define IKIGAI_WARN_CLIENT(message, ...)
 #endif
 
-#ifdef LOG_INFO_ENABLED == 1
+#if LOG_INFO_ENABLED == 1
 #define IKIGAI_INFO_CLIENT(message, ...) Ikigai::Logging::GetClientLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_INFO, message, ##__VA_ARGS__)
 #else
 #define IKIGAI_INFO_CLIENT(message, ...)
 #endif
 
-#ifdef LOG_DEBUG_ENABLED == 1
+#if LOG_DEBUG_ENABLED == 1
 #define IKIGAI_DEBUG_CLIENT(message, ...) Ikigai::Logging::GetClientLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_DEBUG, message, ##__VA_ARGS__)
 #else
 #define IKIGAI_DEBUG_CLIENT(message, ...)
 #endif
 
-#ifdef LOG_TRACE_ENABLED == 1
+#if LOG_TRACE_ENABLED == 1
 #define IKIGAI_TRACE_CLIENT(message, ...) Ikigai::Logging::GetClientLogger()->Log(Ikigai::Logger::LogSeverityLevel::LOG_SEVERITY_TRACE, message, ##__VA_ARGS__)
 #else
 #define IKIGAI_TRACE_CLIENT(message, ...)

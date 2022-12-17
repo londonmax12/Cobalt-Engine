@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <cstdarg>
 #include <sys/stat.h>
+#include <chrono>
+#include <thread>
 
 #ifdef IKIGAI_PLATFORM_WINDOWS
 #include <Windows.h>
