@@ -2,7 +2,7 @@
 
 #include "Event/MouseEvents.h"
 
-constexpr int IkigaiMaxMouseButtons = 5;
+#include <vector>
 
 namespace Ikigai {
 	class Input {
@@ -10,10 +10,5 @@ namespace Ikigai {
 		static bool Init();
 
 		static bool IsMouseButtonDown(int mouseButton);
-	private:
-		static inline bool m_DownMouseButtons[IkigaiMaxMouseButtons] = { false, false, false, false, false };
-
-		static bool MouseDownCallback(Ikigai::Ref<Ikigai::Event> ev);
-		static bool MouseUpCallback(Ikigai::Ref<Ikigai::Event> ev);
 	};
 }

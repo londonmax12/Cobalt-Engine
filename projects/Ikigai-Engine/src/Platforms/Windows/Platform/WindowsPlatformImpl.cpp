@@ -8,6 +8,9 @@
 #include "Event/ApplicationEvents.h"
 #include "Event/MouseEvents.h"
 
+#include "Input/Keycodes.h"
+#include "Platforms/PlatformInput.h"
+
 namespace Ikigai {
 	static double g_ClockFrequency;
 	static LARGE_INTEGER g_StartTime;
@@ -73,35 +76,44 @@ namespace Ikigai {
 
 		case WM_LBUTTONDOWN:
 		{
-			EventSystem::PushEvent(CreateRef<MouseDownEvent>(0));
+			EventSystem::PushEvent(CreateRef<MouseDownEvent>(M_LEFT));
 			break;
 		}
 		case WM_RBUTTONDOWN:
 		{
-			EventSystem::PushEvent(CreateRef<MouseDownEvent>(2));
+			EventSystem::PushEvent(CreateRef<MouseDownEvent>(M_RIGHT));
 			break;
 		}
 		case WM_MBUTTONDOWN:
 		{
-			EventSystem::PushEvent(CreateRef<MouseDownEvent>(1));
+			EventSystem::PushEvent(CreateRef<MouseDownEvent>(M_MIDDLE));
 			break;
 		}
 		case WM_LBUTTONUP:
 		{
-			EventSystem::PushEvent(CreateRef<MouseUpEvent>(0));
+			EventSystem::PushEvent(CreateRef<MouseUpEvent>(M_LEFT));
 			break;
 		}
 		case WM_RBUTTONUP:
 		{
-			EventSystem::PushEvent(CreateRef<MouseUpEvent>(2));
+			EventSystem::PushEvent(CreateRef<MouseUpEvent>(M_RIGHT));
 			break;
 		}
 		case WM_MBUTTONUP:
 		{
-			EventSystem::PushEvent(CreateRef<MouseUpEvent>(1));
+			EventSystem::PushEvent(CreateRef<MouseUpEvent>(M_MIDDLE));
 			break;
 		}
-
+		case WM_XBUTTONDOWN:
+		{
+			EventSystem::PushEvent(CreateRef<MouseDownEvent>(GET_XBUTTON_WPARAM(wParam) == 1 ? M_S1 : M_S2));
+			break;
+		}
+		case WM_XBUTTONUP:
+		{
+			EventSystem::PushEvent(CreateRef<MouseUpEvent>(GET_XBUTTON_WPARAM(wParam) == 1 ? M_S1 : M_S2));
+			break;
+		}
 		default:
 			break;
 		}

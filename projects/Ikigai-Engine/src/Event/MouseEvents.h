@@ -1,16 +1,17 @@
 #pragma once
 #include "Event.h"
+#include "Input/MouseCodes.h"
 
 namespace Ikigai {
 	class MouseDownEvent : public Event {
 	public:
-		MouseDownEvent(int mouseButton) : Event(EVENT_TYPE_MOUSEDOWN), MouseButton(mouseButton) {};
-		int MouseButton;
+		MouseDownEvent(MouseCode mouseButton) : Event(EVENT_TYPE_MOUSEDOWN), MouseButton(mouseButton) {};
+		MouseCode MouseButton;
 	};
 	class MouseUpEvent : public Event {
 	public:
-		MouseUpEvent(int mouseButton) : Event(EVENT_TYPE_MOUSEUP), MouseButton(mouseButton) {};
-		int MouseButton;
+		MouseUpEvent(MouseCode mouseButton) : Event(EVENT_TYPE_MOUSEUP), MouseButton(mouseButton) {};
+		MouseCode MouseButton;
 	};
 
 	class MouseScrollEvent : public Event {

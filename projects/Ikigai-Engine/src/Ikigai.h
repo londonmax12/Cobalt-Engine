@@ -19,3 +19,6 @@
 #include "Event/ApplicationEvents.h"
 #include "Event/SurfaceEvents.h"
 #include "Event/MouseEvents.h"
+
+// INPUT
+#include "Input/Input.h"

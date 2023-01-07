@@ -36,6 +36,7 @@ bool Ikigai::Application::Init(ApplicationConfig config)
 	m_Running = true;
 
 	m_Instance = this;
+
 	return true;
 }
 
@@ -45,9 +46,9 @@ void Ikigai::Application::Run()
 		if (!Ikigai::Platform::PumpMessages(m_State))
 			m_Running = false;
 		EventSystem::PollEvents();
+		OnUpdate(deltaTime);
 	}
 	Ikigai::Platform::Shutdown(m_State);
-
 
 	EventSystem::Shutdown();
 }

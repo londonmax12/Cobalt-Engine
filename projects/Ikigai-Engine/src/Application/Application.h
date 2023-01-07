@@ -2,6 +2,7 @@
 #include "Platforms/Platform.h"
 #include "Core.h"
 #include "Event/ApplicationEvents.h"
+#include "Time/DeltaTime.h"
 
 namespace Ikigai {
 	struct ApplicationConfig {
@@ -22,6 +23,7 @@ namespace Ikigai {
 		void Run();
 		static Application* GetInstance() { return m_Instance; }
 
+		virtual void OnUpdate(DeltaTime dt) = 0;
 	private:
 		inline static Application* m_Instance = nullptr;
 
@@ -31,6 +33,8 @@ namespace Ikigai {
 		bool m_Suspended = false;
 
 		Platform::PlatformState* m_State = nullptr;
+
+		DeltaTime deltaTime;
 
 		int m_Width = 0;
 		int m_Height = 0;

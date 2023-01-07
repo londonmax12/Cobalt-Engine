@@ -5,6 +5,7 @@
 #include "Math/Vector.h"
 #include "Math/Vertex.h"
 #include "Platforms/Platform.h"
+#include "Time/DeltaTime.h"
 
 #define LOG_WARN_ENABLED 1
 #define LOG_INFO_ENABLED 1
@@ -99,7 +100,21 @@ struct std::formatter<Ikigai::Vertex3D> : std::formatter<std::string> {
 			std::format("{}", v.Position), ctx);
 	}
 };
+template <>
+struct std::formatter<Ikigai::Timer> : std::formatter<std::string> {
+	auto format(Ikigai::Timer t, format_context& ctx) {
+		return formatter<string>::format(
+			std::format("{}", t.ElapsedMilliseconds()), ctx);
+	}
+};
 
+template <>
+struct std::formatter<Ikigai::DeltaTime> : std::formatter<std::string> {
+	auto format(Ikigai::DeltaTime t, format_context& ctx) {
+		return formatter<string>::format(
+			std::format("{}", t.ElapsedMilliseconds()), ctx);
+	}
+};
 
 
 namespace Ikigai {
