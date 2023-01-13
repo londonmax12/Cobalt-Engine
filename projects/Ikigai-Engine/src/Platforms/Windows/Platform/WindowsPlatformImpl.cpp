@@ -210,6 +210,10 @@ bool Ikigai::Platform::Startup(PlatformState* state, const char* applicationName
 void Ikigai::Platform::Shutdown(PlatformState* state)
 {
 	WindowsInternalState* internalState = (WindowsInternalState*)state->internalState;
+	if (internalState == nullptr) {
+		IKIGAI_WARN("Internal state was invalid while trying to shutdown Win32 platform");
+		return;
+	}
 	if (internalState->hwnd) {
 		DestroyWindow(internalState->hwnd);
 	}

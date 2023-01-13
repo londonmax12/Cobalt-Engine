@@ -2,19 +2,16 @@
 
 class SandboxApp : public Ikigai::Application {
 public:
-	SandboxApp() {
-		Ikigai::ApplicationConfig config = Ikigai::ApplicationConfig::createConfig();
+	SandboxApp(Ikigai::ApplicationConfig conf)
+		: Ikigai::Application(conf)
+	{
 
-		config.ApplicationName = "Sandbox";
-
-		Init(config);
 	}
 
 	void OnUpdate(Ikigai::DeltaTime deltaTime) { 
-		IKIGAI_INFO("{}", deltaTime.Elapsed());
 	}
 };
 
 Ikigai::Application* Ikigai::CreateApplication() {
-	return new SandboxApp();
+	return new SandboxApp(ApplicationConfig("Sandbox"));
 }

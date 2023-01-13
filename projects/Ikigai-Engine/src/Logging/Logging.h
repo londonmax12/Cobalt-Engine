@@ -104,7 +104,7 @@ template <>
 struct std::formatter<Ikigai::Timer> : std::formatter<std::string> {
 	auto format(Ikigai::Timer t, format_context& ctx) {
 		return formatter<string>::format(
-			std::format("{}", t.ElapsedMilliseconds()), ctx);
+			std::format("{}", t.Elapsed()), ctx);
 	}
 };
 
@@ -112,7 +112,7 @@ template <>
 struct std::formatter<Ikigai::DeltaTime> : std::formatter<std::string> {
 	auto format(Ikigai::DeltaTime t, format_context& ctx) {
 		return formatter<string>::format(
-			std::format("{}", t.ElapsedMilliseconds()), ctx);
+			std::format("{}", (float)t), ctx);
 	}
 };
 
@@ -141,7 +141,7 @@ namespace Ikigai {
 			char out[msgSize];
 			memset(out, 0, sizeof(out));
 
-			char outMsg[msgSize];
+			char outMsg[msgSize]{};
 			sprintf_s(outMsg, msgSize, "[%s]\t%s: %s\n", str[(int)level], name, std::vformat(msg, std::make_format_args(args...)).c_str());
 
 			if (isError) {

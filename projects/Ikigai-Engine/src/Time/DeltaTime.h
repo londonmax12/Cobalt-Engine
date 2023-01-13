@@ -2,14 +2,16 @@
 #include "Timer.h"
 
 namespace Ikigai {
-	class DeltaTime : public Timer
+	class DeltaTime
 	{
 	public:
-		operator float()
+		DeltaTime(float time) : m_Time(time) {}
+
+		operator float() const
 		{
-			return Elapsed();
+			return m_Time;
 		}
 	private:
-
+		float m_Time;
 	};
 }

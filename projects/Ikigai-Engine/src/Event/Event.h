@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "Application/Core.h"
+#include <queue>
 
 namespace Ikigai {
 	enum EventType {
@@ -17,14 +18,23 @@ namespace Ikigai {
 	class Event {
 	public:
 		Event(EventType type) : m_Type(type) {}
+
+		int GetPriority() const { return m_Priority; }
 	protected:
 		EventType m_Type;
 
+		int m_Priority = 0;
+		
 		friend EventSystem;
 	};
 
-	typedef bool (*EventCallback)(Ref<Event> e);
+	struct EventCompare {
+		bool operator()(Ref<Event> a, Ref<Event> b) {
+			return a->GetPriority() > b->GetPriority();
+		}
+	};
 
+	using EventCallback = bool(*)(Ref<Event>);
 
 	class EventListener {
 	public:
@@ -41,13 +51,13 @@ namespace Ikigai {
 		static void Register(EventListener listener);
 		static void Unregister(EventListener listener);
 
-		static void PushEvent(Ref<Ikigai::Event> ev);
+		static void PushEvent(Ref<Ikigai::Event> ev, int priotity = 0);
 
 		static void PollEvents();
 
 		static void Shutdown();
 	private:
-		static inline std::vector<Ref<Ikigai::Event>> m_Events;
+		static inline std::priority_queue<Ref<Event>, std::vector<Ref<Event>>, EventCompare> m_Events;
 		static inline std::unordered_map<EventType, std::vector<EventListener>> m_Listeners;
 	};
 }

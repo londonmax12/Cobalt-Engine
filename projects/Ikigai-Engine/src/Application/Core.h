@@ -1,6 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <functional>
+
+#define IKIGAI_BIND_CALLBACK(obj, method) static_cast<EventCallback>((std::bind(&method, obj, std::placeholders::_1)))
 
 namespace Ikigai {
 	template<typename T>

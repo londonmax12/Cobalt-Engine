@@ -2,16 +2,7 @@
 #include "Application.h"
 #include "Event/Event.h"
 #include "Input/Input.h"
-Ikigai::ApplicationConfig Ikigai::ApplicationConfig::createConfig()
-{
-	ApplicationConfig conf = ApplicationConfig();
-	conf.PositionX = 40;
-	conf.PositionY = 40;
-	conf.Width = 1600;
-	conf.Height = 900;
-	conf.ApplicationName = "Ikigai Application";
-	return conf;
-}
+#include "Debug/Debug.h"
 
 bool Ikigai::Application::Init(ApplicationConfig config)
 {
@@ -20,8 +11,13 @@ bool Ikigai::Application::Init(ApplicationConfig config)
 		return false;
 	}
 
+	m_Width = config.Width;
+	m_Height = config.Height;
+	m_FrameLimit = config.FrameLimit;
+	m_LimitFrames = config.LimitFrameRate;
+
 	Ikigai::Platform::PlatformState state{};
-	bool success = Ikigai::Platform::Startup(&state, config.ApplicationName, config.PositionX, config.PositionY, config.Width, config.Height);
+	bool success = Ikigai::Platform::Startup(&state, config.ApplicationName, config.PositionX, config.PositionY, m_Width, m_Height);
 	IKIGAI_ASSERT_MSG(success, "Failed to start application!");
 	if (!success)
 		return false;
@@ -42,15 +38,54 @@ bool Ikigai::Application::Init(ApplicationConfig config)
 
 void Ikigai::Application::Run()
 {
+	Timer timer{};
+	timer.Start();
+
+	double lastTime = timer.Elapsed();
+	int frameCount = 0;
+	float targetFrames = 1.0f / m_FrameLimit;
+
 	while (m_Running) {
+		double currTime = timer.Elapsed();
+		double frameStart = Platform::GetAbsTime();
+
 		if (!Ikigai::Platform::PumpMessages(m_State))
 			m_Running = false;
+
 		EventSystem::PollEvents();
-		OnUpdate(deltaTime);
+
+		double delta = currTime - lastTime;
+		lastTime = currTime;
+		OnUpdate(DeltaTime((float)delta));
+
+		double frameEnd = Platform::GetAbsTime();
+		double frameTime = frameEnd - frameStart;
+		double deltaSeconds = targetFrames - frameTime;
+
+
+		if (deltaSeconds > 0) {
+			unsigned int remainingMs = (unsigned int)(deltaSeconds * 1000);
+
+			if (m_LimitFrames && remainingMs > 0) {
+				Platform::Sleep(remainingMs);
+			}
+
+			frameCount++;
+		}
+
+		static int lastFrameRecord = 0;
+		int second = (int)std::floor(timer.Elapsed());
+		if (second > lastFrameRecord)
+		{
+			Debug::SetFrameRate(frameCount);
+			frameCount = 0;
+		}
+		lastFrameRecord = second;
 	}
-	Ikigai::Platform::Shutdown(m_State);
 
 	EventSystem::Shutdown();
+
+	Ikigai::Platform::Shutdown(m_State);
 }
 
 bool Ikigai::Application::AppCloseCallback(Ikigai::Ref<Ikigai::Event> ev)
