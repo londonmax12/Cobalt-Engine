@@ -10,7 +10,7 @@ namespace Ikigai {
 		{
 			void* internalState;
 		};
-		void Init();
+		bool Init();
 
 		bool Startup(PlatformState* state, const char* applicationName, int positionX, int positionY, int width, int height);
 		void Shutdown(PlatformState* state);

@@ -7,21 +7,21 @@ const char* Ikigai::Memory::MemoryTypeToString(MemoryType type)
 	switch (type) {
 		case MemoryType::MEMORY_TYPE_OTHER:
 		{
-			return "Other:   ";
+			return "Other:            ";
+		}
+		case MemoryType::MEMORY_TYPE_RENDERER:
+		{
+			return "Renderer:         ";
+		}
+		case MemoryType::MEMORY_TYPE_POOL_ALLOCATOR:
+		{
+			return "Pool Allocator:   ";
 		}
 		default:
 		{
-			return "Unknown: ";
+			return "Unknown:          ";
 		}
 	}
-}
-
-void Ikigai::Memory::Init()
-{
-}
-
-void Ikigai::Memory::Shutdown()
-{
 }
 
 void* Ikigai::Memory::Allocate(uint32_t size, MemoryType type)
@@ -64,7 +64,7 @@ char* Ikigai::Memory::PrintPerformance()
 	const float gb = 1073741824.f;
 
 	IKIGAI_INFO("====== System Memory Usage ======");
-	for (int i = 0; i < MEMORYMAXTYPES; i++) {
+	for (int i = 0; i < MemoryType::MEMORY_MAX_TYPES; i++) {
 		const char* unit = "B";
 		float amount = 0.0f;
 		if (m_Stats.typeAllocations[i] >= kb) {
@@ -83,24 +83,9 @@ char* Ikigai::Memory::PrintPerformance()
 			amount = (float)m_Stats.typeAllocations[i];
 		}
 		const char* label = MemoryTypeToString((MemoryType)i);
-		IKIGAI_INFO("%s%f", label, amount);
+		IKIGAI_INFO("{}{}", label, amount);
 		
 	}
 	IKIGAI_INFO("=================================");
 	return nullptr;
 }
-
-//void* Ikigai::Memory::ZeroMemory(void* block, uint64_t size)
-//{
-//	return Platform::ZeroMem(block, size);
-//}
-//
-//void* Ikigai::Memory::CopyMemory(void* dest, const void* source, uint64_t size)
-//{
-//	return Platform::CopyMem(dest, source, size);
-//}
-//
-//void* Ikigai::Memory::SetMemory(void* dest, int32_t value, uint64_t size)
-//{
-//	return Platform::SetMem(dest, value, size);
-//}

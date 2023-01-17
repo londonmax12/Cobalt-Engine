@@ -4,6 +4,9 @@
 namespace Ikigai {
 	class ApplicationCloseEvent : public Event {
 	public:
-		ApplicationCloseEvent() : Event(EVENT_TYPE_APPLICATION_CLOSE) {};
+		ApplicationCloseEvent() = default;
+
+		EVENT_CLASS_TYPE(EventApplicationClose);
+		EVENT_CLASS_CATEGORY(EventCategoryApplication);
 	};
 }

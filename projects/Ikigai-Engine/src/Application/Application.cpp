@@ -3,6 +3,7 @@
 #include "Event/Event.h"
 #include "Input/Input.h"
 #include "Debug/Debug.h"
+#include "Renderer/Renderer.h"
 
 bool Ikigai::Application::Init(ApplicationConfig config)
 {
@@ -17,15 +18,23 @@ bool Ikigai::Application::Init(ApplicationConfig config)
 	m_LimitFrames = config.LimitFrameRate;
 
 	Ikigai::Platform::PlatformState state{};
-	bool success = Ikigai::Platform::Startup(&state, config.ApplicationName, config.PositionX, config.PositionY, m_Width, m_Height);
-	IKIGAI_ASSERT_MSG(success, "Failed to start application!");
-	if (!success)
-		return false;
-
+	{
+		bool success = Ikigai::Platform::Startup(&state, config.ApplicationName, config.PositionX, config.PositionY, m_Width, m_Height);
+		IKIGAI_ASSERT_MSG(success, "Failed to start application!");
+		if (!success)
+			return false;
+	}
 	IKIGAI_INFO("Created platform application");
 
-	EventSystem::Register(EventListener(EVENT_TYPE_APPLICATION_CLOSE, &AppCloseCallback));
-	IKIGAI_INFO("Created application event listeners");
+	{
+		bool success = Renderer::Init(RendererConfig(RENDERER_BACKEND_VULKAN));
+		IKIGAI_ASSERT_MSG(success, "Failed to initialize renderer!");
+		if (!success)
+			return false;
+	}
+	IKIGAI_INFO("Initialized renderer");
+
+	Ikigai::EventSystem::GetInstance()->AddCallback(IKIGAI_BIND_EVENT_FN(OnEvent));
 
 	m_State = &state;
 
@@ -51,8 +60,6 @@ void Ikigai::Application::Run()
 
 		if (!Ikigai::Platform::PumpMessages(m_State))
 			m_Running = false;
-
-		EventSystem::PollEvents();
 
 		double delta = currTime - lastTime;
 		lastTime = currTime;
@@ -83,13 +90,19 @@ void Ikigai::Application::Run()
 		lastFrameRecord = second;
 	}
 
-	EventSystem::Shutdown();
-
 	Ikigai::Platform::Shutdown(m_State);
 }
 
-bool Ikigai::Application::AppCloseCallback(Ikigai::Ref<Ikigai::Event> ev)
+void Ikigai::Application::OnEvent(Event& e)
 {
-	Ikigai::Application::GetInstance()->m_Running = false;
+	EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<ApplicationCloseEvent>(IKIGAI_BIND_EVENT_FN(Application::OnAppClose));
+
+	Renderer::GetInstance()->OnEvent(e);
+}
+
+bool Ikigai::Application::OnAppClose(ApplicationCloseEvent& ev)
+{
+	m_Running = false;
 	return true;
 }

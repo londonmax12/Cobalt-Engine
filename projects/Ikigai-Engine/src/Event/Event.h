@@ -1,63 +1,100 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
-
-#include "Application/Core.h"
 #include <queue>
+#include <functional>
+
+#include "Logging/Logging.h"
+#include "Application/Core.h"
 
 namespace Ikigai {
 	enum EventType {
-		EVENT_TYPE_KEYDOWN, EVENT_TYPE_KEYUP, 
-		EVENT_TYPE_MOUSESCROLL, EVENT_TYPE_MOUSEUP, EVENT_TYPE_MOUSEDOWN,
-		EVENT_TYPE_SURFACE_RESIZE,
-		EVENT_TYPE_APPLICATION_CLOSE
+		EventKeydown, EventKeyup,
+		EventMouseScroll, EventMouseUp, EventMouseDown, EventMouseMove,
+		EventSurfaceResize,
+		EventApplicationClose,
+
+		EventNone
+    };
+
+	enum EventCategory
+	{
+		EventCategoryNone = 0,
+		EventCategoryApplication = IKIGAI_BIT(0),
+		EventCategorySurface = IKIGAI_BIT(1),
+		EventCategoryInput = IKIGAI_BIT(2),
+		EventCategoryKeyboard = IKIGAI_BIT(3),
+		EventCategoryMouse = IKIGAI_BIT(4),
+		EventCategoryMouseButton = IKIGAI_BIT(5)
 	};
 
-	class EventSystem;
-	
-	class Event {
+#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
+								virtual EventType GetEventType() const override { return GetStaticType(); }\
+								virtual const char* GetName() const override { return #type; }
+
+#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
+
+	class Event
+	{
 	public:
-		Event(EventType type) : m_Type(type) {}
+		virtual ~Event() = default;
 
-		int GetPriority() const { return m_Priority; }
-	protected:
-		EventType m_Type;
+		bool Handled = false;
 
-		int m_Priority = 0;
-		
-		friend EventSystem;
-	};
+		virtual EventType GetEventType() const = 0;
+		virtual const char* GetName() const = 0;
+		virtual int GetCategoryFlags() const = 0;
+		virtual std::string ToString() const { return GetName(); }
 
-	struct EventCompare {
-		bool operator()(Ref<Event> a, Ref<Event> b) {
-			return a->GetPriority() > b->GetPriority();
+		bool IsInCategory(EventCategory category)
+		{
+			return GetCategoryFlags() & category;
 		}
 	};
 
-	using EventCallback = bool(*)(Ref<Event>);
-
-	class EventListener {
+	class EventDispatcher
+	{
+		template<typename T>
+		using EventFn = std::function<bool(T&)>;
 	public:
-		EventListener(EventType type, EventCallback callback) : m_EventType(type), m_Callback(callback) {};
-	private:
-		EventCallback m_Callback;
-		EventType m_EventType;
+		EventDispatcher(Event& event)
+			: m_Event(event)
+		{
+		}
 
-		friend EventSystem;
+		template<typename T>
+		bool Dispatch(EventFn<T> func)
+		{
+			if (m_Event.GetEventType() == T::GetStaticType())
+			{
+				m_Event.Handled = func(*(T*)&m_Event);
+				return true;
+			}
+			return false;
+		}
+	private:
+		Event& m_Event;
 	};
-	 
+
 	class EventSystem {
 	public:
-		static void Register(EventListener listener);
-		static void Unregister(EventListener listener);
+		using EventCallbackFn = std::function<void(Event&)>;
 
-		static void PushEvent(Ref<Ikigai::Event> ev, int priotity = 0);
+		static bool Init();
 
-		static void PollEvents();
+		static Ref<EventSystem> GetInstance() { return m_Instance; }
 
-		static void Shutdown();
+		void AddCallback(EventCallbackFn callback);
+		void DispatchEvent(Event& ev);
+
 	private:
-		static inline std::priority_queue<Ref<Event>, std::vector<Ref<Event>>, EventCompare> m_Events;
-		static inline std::unordered_map<EventType, std::vector<EventListener>> m_Listeners;
+		inline static Ref<EventSystem> m_Instance;
+		
+		std::vector<EventCallbackFn> m_Callbacks;
 	};
+
+	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	{
+		return os << e.ToString();
+	}
 }

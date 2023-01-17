@@ -4,8 +4,22 @@
 namespace Ikigai {
 	class SurfaceResizeEvent : public Event {
 	public:
-		SurfaceResizeEvent(int width, int height) : Event(EVENT_TYPE_SURFACE_RESIZE), Width(width), Height(height) {};
-		int Width;
-		int Height;
+		SurfaceResizeEvent(unsigned int width, unsigned int height)
+			: m_Width(width), m_Height(height) {}
+
+		unsigned int GetWidth() const { return m_Width; }
+		unsigned int GetHeight() const { return m_Height; }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "[SurfaceResizeEvent]" << "(" << m_Width << ", " << m_Height << ")";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(EventSurfaceResize);
+		EVENT_CLASS_CATEGORY(EventCategorySurface);
+	private:
+		unsigned int m_Width, m_Height;
 	};
 }

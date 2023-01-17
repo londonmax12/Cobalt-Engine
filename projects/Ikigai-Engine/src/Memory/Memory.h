@@ -6,23 +6,22 @@ namespace Ikigai {
 	{
 		MEMORY_TYPE_OTHER,
 		MEMORY_TYPE_RENDERER,
+		MEMORY_TYPE_POOL_ALLOCATOR,
 
-		MEMORYMAXTYPES,
+		MEMORY_MAX_TYPES,
 	};
 	
 	class Memory {
 	private:
 		struct MemoryStats {
 			uint64_t total;
-			uint64_t typeAllocations[MEMORYMAXTYPES];
+			uint64_t typeAllocations[MEMORY_MAX_TYPES];
 		};
 
 		static inline MemoryStats m_Stats = MemoryStats();
 
 		static const char* MemoryTypeToString(MemoryType type);
 	public:
-		static void Init();
-		static void Shutdown();
 
 		static void* Allocate(uint32_t size, MemoryType type);
 		static void Free(void* block, uint32_t size, MemoryType type);

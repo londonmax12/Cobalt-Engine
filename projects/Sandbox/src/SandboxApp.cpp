@@ -13,5 +13,5 @@ public:
 };
 
 Ikigai::Application* Ikigai::CreateApplication() {
-	return new SandboxApp(ApplicationConfig("Sandbox"));
+	return new SandboxApp(ApplicationConfig("Sandbox", {1600, 900}, {100, 100}));
 }

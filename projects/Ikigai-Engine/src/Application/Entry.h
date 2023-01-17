@@ -2,7 +2,9 @@
 
 #include "Application/Application.h"
 #include "Logging/Logging.h"
+#include "Logging/Assert.h"
 #include "Input/Input.h"
+#include "Event/Event.h"
 
 extern Ikigai::Application* Ikigai::CreateApplication();
 
@@ -15,6 +17,14 @@ int main(int argc, char** argv) {
 
 	Ikigai::Input::Init();
 	IKIGAI_INFO("Initialized input system");
+
+	{
+		bool success = Ikigai::EventSystem::Init();
+		IKIGAI_ASSERT_MSG(success, "Failed to start event system!");
+		if (!success)
+			return false;
+	}
+	IKIGAI_INFO("Initialized event system");
 
 	Ikigai::Application* app = Ikigai::CreateApplication();
 	if (!app->IsInitialized()) {

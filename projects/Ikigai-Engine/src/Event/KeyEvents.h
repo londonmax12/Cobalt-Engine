@@ -4,14 +4,49 @@
 #include "Event/Event.h"
 
 namespace Ikigai {
-	class KeyDownEvent : public Event {
+	class KeyEvent : public Event
+	{
 	public:
-		KeyDownEvent(KeyCode keyCode) : Event(EVENT_TYPE_KEYDOWN), Key(keyCode) {};
-		KeyCode Key;
+		int GetKeyCode() const { return m_KeyCode; }
+
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+	protected:
+		KeyEvent(int keycode)
+			: m_KeyCode(keycode) {}
+
+		int m_KeyCode;
 	};
-	class KeyUpEvent : public Event {
+
+	class KeydownEvent : public KeyEvent
+	{
 	public:
-		KeyUpEvent(KeyCode keyCode) : Event(EVENT_TYPE_KEYUP), Key(keyCode) {};
-		KeyCode Key;
+		KeydownEvent(int keycode)
+			: KeyEvent(keycode) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "[KeydownEvent](" << m_KeyCode << ")";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(EventKeydown)
 	};
+
+	class KeyupEvent : public KeyEvent
+	{
+	public:
+		KeyupEvent(int keycode)
+			: KeyEvent(keycode) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "[KeyupEvent](" << m_KeyCode << ")";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(EventKeyup)
+	};
+
 }

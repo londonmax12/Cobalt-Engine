@@ -19,9 +19,16 @@ namespace Ikigai {
 
 	class Renderer {
 	public:
-		bool Init(RendererConfig config);
-		void Shutdown();
+		static bool Init(RendererConfig config);
+		static void Shutdown();
+
+		void OnEvent(Event& ev);
+		bool OnResize(SurfaceResizeEvent& ev);
+
+		static Ref<Renderer> GetInstance() { return m_Instance; };
 	private:
-		bool ResizeCallback(Ref<Event> ev);
+		RendererBackend m_Backend = RENDERER_BACKEND_NONE;
+
+		inline static Ref<Renderer> m_Instance;
 	};
 }

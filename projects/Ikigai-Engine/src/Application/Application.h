@@ -33,10 +33,11 @@ namespace Ikigai {
 		virtual void OnUpdate(DeltaTime dt) = 0;
 
 		bool IsInitialized() { return m_Instance != nullptr; }
+
+		void OnEvent(Event& e);
+		bool OnAppClose(ApplicationCloseEvent& ev);
 	private:
 		inline static Application* m_Instance = nullptr;
-
-		static bool AppCloseCallback(Ikigai::Ref<Ikigai::Event> ev);
 
 		bool m_Running = false;
 		bool m_Suspended = false;

@@ -9,7 +9,10 @@
 #include "Event/MouseEvents.h"
 
 #include "Input/Keycodes.h"
+
 #include "Platforms/PlatformInput.h"
+
+#include "Application/Application.h"
 
 namespace Ikigai {
 	static double g_ClockFrequency;
@@ -25,13 +28,15 @@ namespace Ikigai {
 
 		case WM_CLOSE:
 		{
-			EventSystem::PushEvent(CreateRef<ApplicationCloseEvent>());
+			ApplicationCloseEvent ev = ApplicationCloseEvent();
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			return 1;
 		}
 
 		case WM_DESTROY:
 		{
-			EventSystem::PushEvent(CreateRef<ApplicationCloseEvent>());
+			ApplicationCloseEvent ev = ApplicationCloseEvent();
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			PostQuitMessage(0);
 			return 1;
 		}
@@ -42,7 +47,8 @@ namespace Ikigai {
 			GetClientRect(hwnd, &r);
 			int width = r.right - r.left;
 			int height = r.bottom - r.top;
-			EventSystem::PushEvent(CreateRef<SurfaceResizeEvent>(width, height));
+			SurfaceResizeEvent ev = SurfaceResizeEvent(width, height);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			break;
 		}
 
@@ -70,48 +76,58 @@ namespace Ikigai {
 				zDelta = (zDelta < 0) ? -1 : 1;
 			}
 			
-			EventSystem::PushEvent(CreateRef<MouseScrollEvent>(zDelta));
+			MouseScrolledEvent ev = MouseScrolledEvent((float)zDelta, 0);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			break;
 		}
 
 		case WM_LBUTTONDOWN:
 		{
-			EventSystem::PushEvent(CreateRef<MouseDownEvent>(M_LEFT));
+
+			MouseDownEvent ev = MouseDownEvent(M_LEFT);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			break;
 		}
 		case WM_RBUTTONDOWN:
 		{
-			EventSystem::PushEvent(CreateRef<MouseDownEvent>(M_RIGHT));
+			MouseDownEvent ev = MouseDownEvent(M_RIGHT);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			break;
 		}
 		case WM_MBUTTONDOWN:
 		{
-			EventSystem::PushEvent(CreateRef<MouseDownEvent>(M_MIDDLE));
-			break;
-		}
-		case WM_LBUTTONUP:
-		{
-			EventSystem::PushEvent(CreateRef<MouseUpEvent>(M_LEFT));
-			break;
-		}
-		case WM_RBUTTONUP:
-		{
-			EventSystem::PushEvent(CreateRef<MouseUpEvent>(M_RIGHT));
-			break;
-		}
-		case WM_MBUTTONUP:
-		{
-			EventSystem::PushEvent(CreateRef<MouseUpEvent>(M_MIDDLE));
+			MouseDownEvent ev = MouseDownEvent(M_MIDDLE);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			break;
 		}
 		case WM_XBUTTONDOWN:
 		{
-			EventSystem::PushEvent(CreateRef<MouseDownEvent>(GET_XBUTTON_WPARAM(wParam) == 1 ? M_S1 : M_S2));
+			MouseDownEvent ev = MouseDownEvent(GET_XBUTTON_WPARAM(wParam) == 1 ? M_S1 : M_S2);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
+			break;
+		}
+		case WM_LBUTTONUP:
+		{
+			MouseUpEvent ev = MouseUpEvent(M_LEFT);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
+			break;
+		}
+		case WM_RBUTTONUP:
+		{
+			MouseUpEvent ev = MouseUpEvent(M_RIGHT);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
+			break;
+		}
+		case WM_MBUTTONUP:
+		{
+			MouseUpEvent ev = MouseUpEvent(M_MIDDLE);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			break;
 		}
 		case WM_XBUTTONUP:
 		{
-			EventSystem::PushEvent(CreateRef<MouseUpEvent>(GET_XBUTTON_WPARAM(wParam) == 1 ? M_S1 : M_S2));
+			MouseUpEvent ev = MouseUpEvent(GET_XBUTTON_WPARAM(wParam) == 1 ? M_S1 : M_S2);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			break;
 		}
 		default:
@@ -121,12 +137,13 @@ namespace Ikigai {
 	}
 }
 
-void Ikigai::Platform::Init()
+bool Ikigai::Platform::Init()
 {
 	LARGE_INTEGER freq;
 	QueryPerformanceFrequency(&freq);
 	g_ClockFrequency = 1.0 / (float)freq.QuadPart;
 	QueryPerformanceCounter(&g_StartTime);
+	return true;
 }
 
 bool Ikigai::Platform::Startup(PlatformState* state, const char* applicationName, int positionX, int positionY, int width, int height)
