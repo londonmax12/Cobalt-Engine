@@ -96,7 +96,7 @@ void Ikigai::Application::Run()
 void Ikigai::Application::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<ApplicationCloseEvent>(IKIGAI_BIND_EVENT_FN(Application::OnAppClose));
+	dispatcher.Dispatch<ApplicationCloseEvent>(IKIGAI_BIND_EVENT_FN(OnAppClose));
 
 	Renderer::GetInstance()->OnEvent(e);
 }

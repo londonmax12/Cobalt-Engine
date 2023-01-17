@@ -24,9 +24,16 @@ workspace "Ikigai"
             pchheader "ikipch.h"
             pchsource "projects/%{prj.name}/src/ikipch.cpp"
             
+            VULKAN_SDK = os.getenv("VULKAN_SDK")
+
+            LibraryDir = {}
+        
+            LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
+
             includedirs
             {
-                "projects/Ikigai-Engine/src"
+                "projects/Ikigai-Engine/src",
+                "%{VULKAN_SDK}/Include"
             }
 
             files
@@ -35,17 +42,28 @@ workspace "Ikigai"
                 "projects/%{prj.name}/src/**.cpp",
             }
 
+
+            libdirs
+            {
+                "%{VULKAN_SDK}/Lib"
+            }
+
+            links
+            {
+                "vulkan-1.lib"
+            }
+
             filter "configurations:Debug"
                 defines "IKIGAI_DEBUG_MODE"
                 buildoptions "/MDd"
                 symbols "on"
-
-            filter "configurations:Release"
+                
+                filter "configurations:Release"
                 defines "IKIGAI_RELEASE_MODE"
                 buildoptions "/MD"
                 optimize "on"
-        
-            filter "configurations:Distribution"
+                
+                filter "configurations:Distribution"
                 defines "IKIGAI_DISTRIBUTION_MODE"
                 buildoptions "/MD"
                 optimize "on"
