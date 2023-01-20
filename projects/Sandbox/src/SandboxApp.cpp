@@ -1,17 +1,17 @@
-#include "Ikigai.h"
+#include "Cobalt.h"
 
-class SandboxApp : public Ikigai::Application {
+class SandboxApp : public Cobalt::Application {
 public:
-	SandboxApp(Ikigai::ApplicationConfig conf)
-		: Ikigai::Application(conf)
+	SandboxApp(Cobalt::ApplicationConfig conf)
+		: Cobalt::Application(conf)
 	{
 
 	}
 
-	void OnUpdate(Ikigai::DeltaTime deltaTime) { 
+	void OnUpdate(Cobalt::DeltaTime deltaTime) {
 	}
 };
 
-Ikigai::Application* Ikigai::CreateApplication() {
+Cobalt::Application* Cobalt::CreateApplication() {
 	return new SandboxApp(ApplicationConfig("Sandbox", {1600, 900}, {100, 100}));
 }

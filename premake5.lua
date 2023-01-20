@@ -1,6 +1,6 @@
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-workspace "Ikigai"
+workspace "Cobalt"
     architecture "x64"
 
     configurations
@@ -11,18 +11,18 @@ workspace "Ikigai"
     }
 
     group "Core"
-        project "Ikigai-Engine"
-            location "projects/Ikigai-Engine"
+        project "Cobalt-Engine"
+            location "projects/Cobalt-Engine"
             kind "StaticLib"
             language "C++"
             cppdialect "C++20"
             staticruntime "off"
 
             targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-            objdir ("bin/int" .. outputdir .. "/%{prj.name}")
+            objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
 
-            pchheader "ikipch.h"
-            pchsource "projects/%{prj.name}/src/ikipch.cpp"
+            pchheader "cobaltpch.h"
+            pchsource "projects/%{prj.name}/src/cobaltpch.cpp"
             
             VULKAN_SDK = os.getenv("VULKAN_SDK")
 
@@ -32,7 +32,7 @@ workspace "Ikigai"
 
             includedirs
             {
-                "projects/Ikigai-Engine/src",
+                "projects/Cobalt-Engine/src",
                 "%{VULKAN_SDK}/Include"
             }
 
@@ -54,17 +54,17 @@ workspace "Ikigai"
             }
 
             filter "configurations:Debug"
-                defines "IKIGAI_DEBUG_MODE"
+                defines "COBALT_DEBUG_MODE"
                 buildoptions "/MDd"
                 symbols "on"
                 
                 filter "configurations:Release"
-                defines "IKIGAI_RELEASE_MODE"
+                defines "COBALT_RELEASE_MODE"
                 buildoptions "/MD"
                 optimize "on"
                 
                 filter "configurations:Distribution"
-                defines "IKIGAI_DISTRIBUTION_MODE"
+                defines "COBALT_DISTRIBUTION_MODE"
                 buildoptions "/MD"
                 optimize "on"
                 
@@ -77,7 +77,7 @@ workspace "Ikigai"
             staticruntime "off"
 
             targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-            objdir ("bin/int" .. outputdir .. "/%{prj.name}")
+            objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
 
             files
             {
@@ -87,26 +87,26 @@ workspace "Ikigai"
 
             includedirs
             {
-                "projects/Ikigai-Engine/src"
+                "projects/Cobalt-Engine/src"
             }        
 
             links
             {
-                "Ikigai-Engine"
+                "Cobalt-Engine"
             }
 
             filter "configurations:Debug"
-                defines "IKIGAI_DEBUG_MODE"
+                defines "COBALT_DEBUG_MODE"
                 buildoptions "/MDd"
                 symbols "on"
 
             filter "configurations:Release"
-                defines "IKIGAI_RELEASE_MODE"
+                defines "COBALT_RELEASE_MODE"
                 buildoptions "/MD"
                 optimize "on"
 
             filter "configurations:Distribution"
-                defines "IKIGAI_DISTRIBUTION_MODE"
+                defines "COBALT_DISTRIBUTION_MODE"
                 buildoptions "/MD"
                 optimize "on"
             
