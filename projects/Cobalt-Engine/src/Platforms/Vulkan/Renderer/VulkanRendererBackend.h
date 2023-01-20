@@ -17,5 +17,9 @@ namespace Cobalt {
 	private:
 		VkInstance m_Instance = nullptr;
 		VkAllocationCallbacks* m_Allocator = nullptr;
+
+#ifdef COBALT_DEBUG_MODE
+		VkDebugUtilsMessengerEXT m_Messenger;
+#endif
 	};
 }

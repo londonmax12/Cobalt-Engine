@@ -90,7 +90,8 @@ void Cobalt::Application::Run()
 		lastFrameRecord = second;
 	}
 
-	Cobalt::Platform::Shutdown(m_State);
+	Renderer::Shutdown();
+	Platform::Shutdown(m_State);
 }
 
 void Cobalt::Application::OnEvent(Event& e)

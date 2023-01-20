@@ -290,4 +290,8 @@ double Cobalt::Platform::GetAbsTime() {
 void Cobalt::Platform::Sleep(int ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
+void Cobalt::Platform::GetVulkanExtensions(std::vector<const char*>& out)
+{
+	out.push_back("VK_KHR_win32_surface");
+}
 #endif
