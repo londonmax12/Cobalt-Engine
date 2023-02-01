@@ -81,7 +81,7 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::
     COBALT_INFO("Created Vulkan surface");
 
     m_State->Device = CreateRef<VulkanDevice>();
-    if (!m_State->Device->Init(m_State->Instance, m_State->Surface))
+    if (!m_State->Device->Init(m_State->Instance, m_State->Surface, m_State->Allocator))
         return false;
     COBALT_INFO("Created Vulkan device");
 

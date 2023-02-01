@@ -4,12 +4,15 @@
 
 #include "Platforms/Vulkan/Utility/VulkanUtility.h"
 
-bool Cobalt::VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface)
+bool Cobalt::VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface, VkAllocationCallbacks* allocator)
 {
 	m_Instance = instance;
+	m_Allocator = allocator;
 
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(instance, &deviceCount, 0);
+	if (!VK_CHECK(vkEnumeratePhysicalDevices(instance, &deviceCount, 0))) {
+		COBALT_FATAL("Failed to enumerate physical devices");
+	}
 	if (deviceCount == 0) {
 		COBALT_FATAL("Failed to find supported Vulkan device");
 	}
@@ -25,7 +28,6 @@ bool Cobalt::VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface)
 
 		VkPhysicalDeviceMemoryProperties memory;
 		vkGetPhysicalDeviceMemoryProperties(a[i], &memory);
-
 
 		DeviceRequirements info{};
 		info.Graphics = true;
@@ -96,7 +98,64 @@ bool Cobalt::VulkanDevice::Init(VkInstance instance, VkSurfaceKHR surface)
 		return false;
 	}
 	delete[] a;
+
+	bool presentSharesGraphicsQueue = m_GraphicsIndex == m_PresentIndex;
+	bool transferSharesGraphicsQueue = m_GraphicsIndex == m_TransferIndex;
+	int indexCount = 1;
+	if (!presentSharesGraphicsQueue) {
+		indexCount++;
+	}
+	if (!transferSharesGraphicsQueue) {
+		indexCount++;
+	}
+	std::vector<int> indices(indexCount);
+	int index = 0;
+	indices[index++] = m_GraphicsIndex;
+	if (!presentSharesGraphicsQueue) {
+		indices[index++] = m_PresentIndex;
+	}
+	if (!transferSharesGraphicsQueue) {
+		indices[index++] = m_TransferIndex;
+	}
+	std::vector<VkDeviceQueueCreateInfo> queueCreateInfo(indexCount);
+	for (int i = 0; i < indexCount; i++) {
+		queueCreateInfo[i].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo[i].queueFamilyIndex = indices[i];
+		queueCreateInfo[i].queueCount = 1;
+		if (indices[i] == m_GraphicsIndex) {
+			queueCreateInfo[i].queueCount = 2;
+		}
+		queueCreateInfo[i].flags = 0;
+		queueCreateInfo[i].pNext = nullptr;
+		float queuePriority = 1.f;
+		queueCreateInfo[i].pQueuePriorities = &queuePriority;
+	}
+
+	VkPhysicalDeviceFeatures deviceFeatures{};
+	deviceFeatures.samplerAnisotropy = VK_TRUE;
+
+	VkDeviceCreateInfo deviceCreateInfo{};
+	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	deviceCreateInfo.queueCreateInfoCount = indexCount;
+	deviceCreateInfo.pQueueCreateInfos = queueCreateInfo.data();
+	deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
+	deviceCreateInfo.enabledExtensionCount = 1;
+	const char* extensionNames = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+	deviceCreateInfo.ppEnabledExtensionNames = &extensionNames;
+
+	if (!VK_CHECK(vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, allocator, &m_LogicalDevice))) {
+		COBALT_FATAL("Failed to create logical device");
+		return false;
+	}
+
+	COBALT_INFO("Logical device created");
 	return true;
+}
+
+void Cobalt::VulkanDevice::Shutdown()
+{
+	if (m_LogicalDevice)
+		vkDestroyDevice(m_LogicalDevice, m_Allocator);
 }
 
 bool Cobalt::VulkanDevice::DeviceMeetsRequirements(VkPhysicalDevice device, VkSurfaceKHR surface, const VkPhysicalDeviceProperties* properties, const VkPhysicalDeviceFeatures* features, const DeviceRequirements requirements, QueueFamilyInfo* outQueueFamilyInfo, VulkanSwapchainSupportInfo* outSwapchainSupport)
@@ -137,7 +196,10 @@ bool Cobalt::VulkanDevice::DeviceMeetsRequirements(VkPhysicalDevice device, VkSu
 			}
 		}
 		VkBool32 supportsPresent = VK_FALSE;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &supportsPresent);
+		if (!VK_CHECK(vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &supportsPresent))) {
+			COBALT_FATAL("Failed to get Vulkan physical device surface support");
+			return false;
+		}
 		if (supportsPresent) {
 			outQueueFamilyInfo->PresentIndex = i;
 		}
@@ -159,7 +221,10 @@ bool Cobalt::VulkanDevice::DeviceMeetsRequirements(VkPhysicalDevice device, VkSu
 			int reqExtensions = requirements.Extensions.size();
 			if (reqExtensions > 0) {
 				uint32_t count;
-				vkEnumerateDeviceExtensionProperties(device, nullptr, &count, nullptr);
+				if (!VK_CHECK(vkEnumerateDeviceExtensionProperties(device, nullptr, &count, nullptr))) {
+					COBALT_ERROR("Failed to enumerate device extension properties");
+					return false;
+				}
 				std::vector<VkExtensionProperties> extensions(count);
 				vkEnumerateDeviceExtensionProperties(device, nullptr, &count, extensions.data());
 
@@ -179,23 +244,32 @@ bool Cobalt::VulkanDevice::DeviceMeetsRequirements(VkPhysicalDevice device, VkSu
 			}
 		}
 		if (requirements.SamplerAnisomtropy && !features->samplerAnisotropy) {
-			COBALT_INFO("Device does not support samplerAnisotropy");
+			COBALT_INFO("Device does not support SamplerAnisotropy");
 			return false;
 		}
 		return true;
 	}
-	return false;
 	delete[] queueFamilies;
+	return false;
 }
 
 void Cobalt::VulkanDevice::QuerySwapchainSupportInfo(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VulkanSwapchainSupportInfo* outInfo)
 {
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &outInfo->Capibilities);
-	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &outInfo->FormatCount, outInfo->Formats);
+	if (!VK_CHECK(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &outInfo->Capibilities))) {
+		COBALT_ERROR("Failed to get Vulkan physical device surface capibilities");
+		return;
+	}
+	if (!VK_CHECK(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &outInfo->FormatCount, outInfo->Formats))) {
+		COBALT_ERROR("Failed to get Vulkan physical device surface formats");
+		return;
+	}
 	if (outInfo->FormatCount != 0) {
 		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &outInfo->FormatCount, outInfo->Formats);
 	}
-	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &outInfo->PresentModeCount, 0);
+	if (!VK_CHECK(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &outInfo->PresentModeCount, 0))) {
+		COBALT_ERROR("Failed to get Vulkan physical device surface present modes");
+		return;
+	}
 	if (outInfo->PresentModeCount != 0) {
 		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &outInfo->PresentModeCount, outInfo->PresentModes);
 	}

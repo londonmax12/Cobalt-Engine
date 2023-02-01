@@ -29,7 +29,8 @@ namespace Cobalt {
 		VkDevice m_LogicalDevice;
 
 	public:
-		bool Init(VkInstance instance, VkSurfaceKHR surface);
+		bool Init(VkInstance instance, VkSurfaceKHR surface, VkAllocationCallbacks* allocator);
+		void Shutdown();
 
 		operator VkDevice() const { return m_LogicalDevice; } 
 		operator VkPhysicalDevice() const { return m_PhysicalDevice; }
@@ -54,5 +55,7 @@ namespace Cobalt {
 		VkPhysicalDeviceProperties m_Properties;
 		VkPhysicalDeviceFeatures m_Features;
 		VkPhysicalDeviceMemoryProperties m_Memory;
+
+		VkAllocationCallbacks* m_Allocator;
 	};
 }
