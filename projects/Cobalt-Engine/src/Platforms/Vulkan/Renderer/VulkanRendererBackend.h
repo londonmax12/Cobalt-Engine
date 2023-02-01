@@ -4,6 +4,10 @@
 
 #include <vulkan/vulkan.h>
 
+#include "Platforms/Vulkan/VulkanStructs.h"
+#include "Platforms/Vulkan/Debug/VulkanDebugger.h"
+#include "Platforms/Vulkan/Renderer/VulkanDevice.h"
+
 namespace Cobalt {
 	class VulkanRendererBackend : public RendererBackend {
 	public:
@@ -15,11 +19,10 @@ namespace Cobalt {
 		bool EndFrame(DeltaTime dt);
 	
 	private:
-		VkInstance m_Instance = nullptr;
-		VkAllocationCallbacks* m_Allocator = nullptr;
+		Ref<VulkanState> m_State;
 
 #ifdef COBALT_DEBUG_MODE
-		VkDebugUtilsMessengerEXT m_Messenger;
+		Ref<VulkanDebugger> m_Debugger;
 #endif
 	};
 }

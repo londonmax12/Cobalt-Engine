@@ -16,10 +16,10 @@ bool Cobalt::Application::Init(ApplicationConfig config)
 	m_Height = config.Height;
 	m_FrameLimit = config.FrameLimit;
 	m_LimitFrames = config.LimitFrameRate;
+	m_State = new Platform::PlatformState();
 
-	Cobalt::Platform::PlatformState state{};
 	{
-		bool success = Cobalt::Platform::Startup(&state, config.ApplicationName, config.PositionX, config.PositionY, m_Width, m_Height);
+		bool success = Cobalt::Platform::Startup(m_State, config.ApplicationName, config.PositionX, config.PositionY, m_Width, m_Height);
 		COBALT_ASSERT_MSG(success, "Failed to start application!");
 		if (!success)
 			return false;
@@ -27,7 +27,10 @@ bool Cobalt::Application::Init(ApplicationConfig config)
 	COBALT_INFO("Created platform application");
 
 	{
-		bool success = Renderer::Init(RendererConfig(RENDERER_BACKEND_VULKAN));
+		RendererConfig conf = RendererConfig(RENDERER_BACKEND_VULKAN);
+		conf.State = m_State;
+
+		bool success = Renderer::Init(conf);
 		COBALT_ASSERT_MSG(success, "Failed to initialize renderer!");
 		if (!success)
 			return false;
@@ -35,8 +38,6 @@ bool Cobalt::Application::Init(ApplicationConfig config)
 	COBALT_INFO("Initialized renderer");
 
 	Cobalt::EventSystem::GetInstance()->AddCallback(COBALT_BIND_EVENT_FN(OnEvent));
-
-	m_State = &state;
 
 	m_Running = true;
 
@@ -92,6 +93,7 @@ void Cobalt::Application::Run()
 
 	Renderer::Shutdown();
 	Platform::Shutdown(m_State);
+	delete m_State;
 }
 
 void Cobalt::Application::OnEvent(Event& e)

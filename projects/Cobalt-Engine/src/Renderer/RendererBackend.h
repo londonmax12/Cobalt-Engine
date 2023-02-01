@@ -17,7 +17,7 @@ namespace Cobalt {
 		virtual bool EndFrame(DeltaTime dt) = 0;
 
 	private:
-		Platform::PlatformState* m_PlatformState;
+		Platform::PlatformState* m_PlatformState = nullptr;
 	};
 
 	struct RenderCommand

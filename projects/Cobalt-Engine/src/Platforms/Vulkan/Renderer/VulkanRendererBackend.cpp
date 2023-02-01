@@ -2,31 +2,12 @@
 #include "VulkanRendererBackend.h"
 
 #include "Platforms/Vulkan/Utility/VulkanUtility.h"
-
-VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugMessengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
-{
-    switch (messageSeverity)
-    {
-    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-        COBALT_TRACE(callbackData->pMessage);
-        break;
-    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-        COBALT_INFO(callbackData->pMessage);
-        break;
-    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-        COBALT_WARN(callbackData->pMessage);
-        break;
-    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-        COBALT_ERROR(callbackData->pMessage);
-        break;
-    default:
-        break;
-    }
-    return VK_FALSE;
-}
+#include "Platforms/Vulkan/VulkanPlatform.h"
 
 bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::PlatformState* platformState, int width, int height)
 {
+    m_State = CreateRef<VulkanState>();
+
     VkApplicationInfo appInfo{ VK_STRUCTURE_TYPE_APPLICATION_INFO };
     appInfo.apiVersion = VK_API_VERSION_1_3;
     appInfo.pApplicationName = applicationName;
@@ -35,17 +16,11 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 
     std::vector<const char*> requiredExtensions;
-
-    // Generic extensions
     requiredExtensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
+    Platform::GetVulkanExtensions(&requiredExtensions);
 
-    // Platform specific extensions
-    Platform::GetVulkanExtensions(requiredExtensions);
-
-    // Debug extensions
 #ifdef COBALT_DEBUG_MODE
     requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-
     COBALT_DEBUG("Vulkan Required Extensions ({}):", requiredExtensions.size());
     for (auto& extension : requiredExtensions) {
         COBALT_DEBUG("\t| {}", extension);
@@ -60,8 +35,6 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::
     instanceCreateInfo.ppEnabledLayerNames = 0;
 
 #ifdef COBALT_DEBUG_MODE
-    COBALT_DEBUG("Vulkan validation layers enabled");
-    
     std::vector<const char*> requiredLayers;
     requiredLayers.push_back("VK_LAYER_KHRONOS_validation");
 
@@ -90,48 +63,43 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::
     instanceCreateInfo.ppEnabledLayerNames = requiredLayers.data();
 #endif
 
-    if (!VK_CHECK(vkCreateInstance(&instanceCreateInfo, m_Allocator, &m_Instance))) {
+    if (!VK_CHECK(vkCreateInstance(&instanceCreateInfo, m_State->Allocator, &m_State->Instance))) {
         COBALT_ERROR("Failed to initialize Vulkan instance");
         return false;
     }
 
 #ifdef COBALT_DEBUG_MODE
-    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{ VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
-    debugCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
-    debugCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
-    debugCreateInfo.pfnUserCallback = VulkanDebugMessengerCallback;
-    debugCreateInfo.pUserData = 0;
-
-    PFN_vkCreateDebugUtilsMessengerEXT createFunction = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_Instance, "vkCreateDebugUtilsMessengerEXT");
-    if (!createFunction)
-    {
-        COBALT_ERROR("Failed to create Vulkan debugger");
+    m_Debugger = CreateRef<VulkanDebugger>();
+    if (!m_Debugger->Init(m_State))
         return false;
-    }
-    VK_CHECK(createFunction(m_Instance, &debugCreateInfo, m_Allocator, &m_Messenger));
-
-    COBALT_INFO("Created Vulkan debugger");
+    COBALT_DEBUG("Created Vulkan debugger");
 #endif
+    
+    m_State->Surface = Platform::CreateVulkanSurface(platformState, m_State);
+    if (!m_State->Surface)
+        return false;
+    COBALT_INFO("Created Vulkan surface");
+
+    m_State->Device = CreateRef<VulkanDevice>();
+    if (!m_State->Device->Init(m_State->Instance, m_State->Surface))
+        return false;
+    COBALT_INFO("Created Vulkan device");
 
     COBALT_INFO("Vulkan renderer backend initialized");
+
     return true;
-
-
 }
 
 void Cobalt::VulkanRendererBackend::Shutdown()
 {
 #ifdef COBALT_DEBUG_MODE
-    if (m_Messenger)
-    {
-        PFN_vkDestroyDebugUtilsMessengerEXT destroyFunction = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_Instance, "vkDestroyDebugUtilsMessengerEXT");
-        destroyFunction(m_Instance, m_Messenger, m_Allocator);
-        COBALT_DEBUG("Destroying Vulkan messenger");
-    }
+    m_Debugger->Shutdown();
 #endif
 
-    vkDestroyInstance(m_Instance, m_Allocator);
-    COBALT_INFO("Destroyed Vulkan index");
+    if(m_State->Instance)
+        vkDestroyInstance(m_State->Instance, m_State->Allocator);
+
+    COBALT_INFO("Destroyed Vulkan instance");
 }
 
 void Cobalt::VulkanRendererBackend::Resized(int width, int height)

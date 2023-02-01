@@ -43,7 +43,8 @@ namespace Cobalt {
 		static RendererBackend* CreateBackend(RendererBackendType type) {
 			switch (type)
 			{
-			case RENDERER_BACKEND_VULKAN: { return new VulkanRendererBackend(); break; }
+			case RENDERER_BACKEND_VULKAN: { return new VulkanRendererBackend(); }
+			default: { return nullptr; }
 			}
 		}
 	private:

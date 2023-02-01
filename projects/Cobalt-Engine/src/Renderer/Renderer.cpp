@@ -17,8 +17,10 @@ bool Cobalt::Renderer::Init(RendererConfig config)
 
 void Cobalt::Renderer::Shutdown()
 {
-	m_Instance->m_Backend->Shutdown();
-	delete m_Instance->m_Backend;
+	if (m_Instance->m_Backend) {
+		m_Instance->m_Backend->Shutdown();
+		delete m_Instance->m_Backend;
+	}
 }
 
 void Cobalt::Renderer::OnEvent(Event& ev)

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <vector>
 
 namespace Cobalt {
 	namespace Platform
@@ -28,7 +27,5 @@ namespace Cobalt {
 
 		double GetAbsTime();
 		void Sleep(int ms);
-
-		void GetVulkanExtensions(std::vector<const char*>& out);
 	}
 }

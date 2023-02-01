@@ -158,8 +158,7 @@ bool Cobalt::Platform::Startup(PlatformState* state, const char* applicationName
 
 	HICON icon = LoadIcon(internalState->hInstance, IDI_APPLICATION);
 	WNDCLASSA wc;
-	ZeroMem(&wc, sizeof(wc));
-
+	memset(&wc, 0, sizeof(wc));
 	wc.style = CS_DBLCLKS;
 	wc.lpfnWndProc = Win32MsgProcess;
 	wc.cbClsExtra = 0;
@@ -289,9 +288,5 @@ double Cobalt::Platform::GetAbsTime() {
 }
 void Cobalt::Platform::Sleep(int ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
-}
-void Cobalt::Platform::GetVulkanExtensions(std::vector<const char*>& out)
-{
-	out.push_back("VK_KHR_win32_surface");
 }
 #endif

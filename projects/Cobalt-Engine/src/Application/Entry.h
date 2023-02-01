@@ -12,9 +12,6 @@ int main(int argc, char** argv) {
 	Cobalt::Logging::Init();
 	COBALT_INFO("Initialized logging system");
 
-	Cobalt::Platform::Init();
-	COBALT_INFO("Initialized platform layer");
-
 	Cobalt::Input::Init();
 	COBALT_INFO("Initialized input system");
 
