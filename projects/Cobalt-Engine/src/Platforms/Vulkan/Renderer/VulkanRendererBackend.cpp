@@ -69,12 +69,12 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::
     }
 
 #ifdef COBALT_DEBUG_MODE
-    m_Debugger = CreateRef<VulkanDebugger>();
+    m_Debugger = CreateRef<VulkanMessenger>();
     if (!m_Debugger->Init(m_State))
         return false;
     COBALT_DEBUG("Created Vulkan debugger");
 #endif
-    
+
     m_State->Surface = Platform::CreateVulkanSurface(platformState, m_State);
     if (!m_State->Surface)
         return false;
@@ -96,7 +96,7 @@ void Cobalt::VulkanRendererBackend::Shutdown()
     m_Debugger->Shutdown();
 #endif
 
-    if(m_State->Instance)
+    if (m_State->Instance)
         vkDestroyInstance(m_State->Instance, m_State->Allocator);
 
     COBALT_INFO("Destroyed Vulkan instance");

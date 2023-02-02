@@ -3,6 +3,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Application/Core.h"
+
 namespace Cobalt {
 	class VulkanDevice;
 
@@ -14,7 +15,6 @@ namespace Cobalt {
 
 		Ref<VulkanDevice> Device = nullptr;
 	};
-
 	struct VulkanSwapchainSupportInfo
 	{
 		VkSurfaceCapabilitiesKHR Capibilities;

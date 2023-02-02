@@ -1,7 +1,7 @@
 #include "cobaltpch.h"
 #include "VulkanUtility.h"
 
-Cobalt::Utility::VulkanResult Cobalt::Utility::VulkanSuccess(VkResult result)
+Cobalt::VulkanResult Cobalt::VulkanSuccess(VkResult result)
 {
     switch (result) {
     default:
@@ -20,7 +20,7 @@ Cobalt::Utility::VulkanResult Cobalt::Utility::VulkanSuccess(VkResult result)
     case VK_SUBOPTIMAL_KHR:
     case VK_PIPELINE_COMPILE_REQUIRED_EXT:
         return VulkanResultWarning;
-    
+
     case VK_ERROR_OUT_OF_HOST_MEMORY:
     case VK_ERROR_OUT_OF_DEVICE_MEMORY:
     case VK_ERROR_INITIALIZATION_FAILED:
@@ -48,7 +48,7 @@ Cobalt::Utility::VulkanResult Cobalt::Utility::VulkanSuccess(VkResult result)
     }
 }
 
-const char* Cobalt::Utility::VulkanResultToString(VkResult result, bool getExtended)
+const char* Cobalt::VulkanResultToString(VkResult result, bool getExtended)
 {
     switch (result) {
     default:
@@ -126,19 +126,21 @@ const char* Cobalt::Utility::VulkanResultToString(VkResult result, bool getExten
     }
 }
 
-bool Cobalt::Utility::VulkanCheckResult(VkResult result, int line, const char* file)
+bool Cobalt::VulkanCheckResult(VkResult result, int line, const char* file)
 {
     VulkanResult res = VulkanSuccess(result);
 
+    std::string fileString = file;
+
     switch (res)
     {
-    case Cobalt::Utility::VulkanResultError:
-        COBALT_ERROR("{} LINE: {}: {}", file, line, VulkanResultToString(result, true));
+    case Cobalt::VulkanResultError:
+        COBALT_ERROR("{} Line: {}: {}", fileString.substr(fileString.find_last_of("/\\") + 1), line, VulkanResultToString(result, true));
         return false;
-    case Cobalt::Utility::VulkanResultWarning:
-        COBALT_WARN("{} LINE: {}: {}", file, line, VulkanResultToString(result, true));
+    case Cobalt::VulkanResultWarning:
+        COBALT_WARN("{} Line: {}: {}", fileString.substr(fileString.find_last_of("/\\") + 1), line, VulkanResultToString(result, true));
         return true;
-    case Cobalt::Utility::VulkanResultSuccess:
+    case Cobalt::VulkanResultSuccess:
         return true;
     default:
         return true;

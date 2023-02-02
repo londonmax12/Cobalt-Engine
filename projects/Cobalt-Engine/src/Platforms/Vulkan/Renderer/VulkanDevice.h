@@ -32,7 +32,7 @@ namespace Cobalt {
 		bool Init(VkInstance instance, VkSurfaceKHR surface, VkAllocationCallbacks* allocator);
 		void Shutdown();
 
-		operator VkDevice() const { return m_LogicalDevice; } 
+		operator VkDevice() const { return m_LogicalDevice; }
 		operator VkPhysicalDevice() const { return m_PhysicalDevice; }
 	private:
 		bool DeviceMeetsRequirements(VkPhysicalDevice device,

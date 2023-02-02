@@ -5,7 +5,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Platforms/Vulkan/VulkanStructs.h"
-#include "Platforms/Vulkan/Debug/VulkanDebugger.h"
+#include "Platforms/Vulkan/Debug/VulkanMessenger.h"
 #include "Platforms/Vulkan/Renderer/VulkanDevice.h"
 
 namespace Cobalt {
@@ -17,12 +17,12 @@ namespace Cobalt {
 
 		bool BeginFrame(DeltaTime dt);
 		bool EndFrame(DeltaTime dt);
-	
+
 	private:
 		Ref<VulkanState> m_State;
 
 #ifdef COBALT_DEBUG_MODE
-		Ref<VulkanDebugger> m_Debugger;
+		Ref<VulkanMessenger> m_Debugger;
 #endif
 	};
 }

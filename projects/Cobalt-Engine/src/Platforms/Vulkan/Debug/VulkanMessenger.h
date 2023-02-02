@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Application/Core.h"
 #include "Platforms/Vulkan/VulkanStructs.h"
 
 #include <vulkan/vulkan.h>
 
 namespace Cobalt {
-	class VulkanDebugger
+	class VulkanMessenger
 	{
 	public:
 		bool Init(Ref<VulkanState> state);

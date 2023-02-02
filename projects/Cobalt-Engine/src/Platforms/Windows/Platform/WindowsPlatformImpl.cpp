@@ -149,7 +149,7 @@ bool Cobalt::Platform::Init()
 bool Cobalt::Platform::Startup(PlatformState* state, const char* applicationName, int positionX, int positionY, int width, int height)
 {
 	state->internalState = malloc(sizeof(WindowsInternalState));
-	WindowsInternalState* internalState = (WindowsInternalState*)state->internalState;
+	WindowsInternalState* internalState = (WindowsInternalState*)&state->internalState;
 
 	if (internalState == nullptr)
 		return false;
@@ -212,9 +212,9 @@ bool Cobalt::Platform::Startup(PlatformState* state, const char* applicationName
 	COBALT_INFO("Created Win32 window ({})", applicationName);
 	COBALT_INFO("\t| Pos: {}", Vector2(positionX, positionY));
 	COBALT_INFO("\t| Size: {}", Vector2(width, height));
+	COBALT_INFO("\t| Handle: {}", (uint16_t)handle);
 
 	internalState->hwnd = handle;
-
 	bool shouldActivate = true;
 	int showWindowCommandFlags = shouldActivate ? SW_SHOW : SW_SHOWNOACTIVATE;
 

@@ -1,6 +1,6 @@
 #include "cobaltpch.h"
 
-#include "VulkanDebugger.h"
+#include "VulkanMessenger.h"
 
 #include "Platforms/Vulkan/Utility/VulkanUtility.h"
 
@@ -26,7 +26,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugMessengerCallback(VkDebugUtilsMessageS
     return VK_FALSE;
 }
 
-bool Cobalt::VulkanDebugger::Init(Ref<VulkanState> state)
+bool Cobalt::VulkanMessenger::Init(Ref<VulkanState> state)
 {
     m_State = state;
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{ VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
@@ -41,12 +41,13 @@ bool Cobalt::VulkanDebugger::Init(Ref<VulkanState> state)
         COBALT_ERROR("Failed to create Vulkan debugger");
         return false;
     }
-    VK_CHECK(createFunction(m_State->Instance, &debugCreateInfo, m_State->Allocator, &m_Messenger));
+    if(!VK_CHECK(createFunction(m_State->Instance, &debugCreateInfo, m_State->Allocator, &m_Messenger)))
+        return false;
 
     return true;
 }
 
-void Cobalt::VulkanDebugger::Shutdown()
+void Cobalt::VulkanMessenger::Shutdown()
 {
     if (m_Messenger)
     {

@@ -22,11 +22,6 @@ VkSurfaceKHR Cobalt::Platform::CreateVulkanSurface(PlatformState* platformState,
 		COBALT_FATAL("Failed to create Win32 Vulkan surface: State is invalid");
 		return NULL;
 	}
-	if (!state->hInstance)
-	{
-		COBALT_FATAL("Failed to create Win32 Vulkan surface: hInstance is invalid");
-		return NULL;
-	}
 	if (!state->hwnd)
 	{
 		COBALT_FATAL("Failed to create Win32 Vulkan surface: hwnd is invalid");
@@ -39,7 +34,7 @@ VkSurfaceKHR Cobalt::Platform::CreateVulkanSurface(PlatformState* platformState,
 
 	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{ VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR };
 
-	surfaceCreateInfo.hinstance = state->hInstance;
+	surfaceCreateInfo.hinstance = GetModuleHandle(nullptr);
 	surfaceCreateInfo.hwnd = state->hwnd;
 
 	VkSurfaceKHR newSurface;
