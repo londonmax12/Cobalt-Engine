@@ -16,7 +16,7 @@ bool Cobalt::Application::Init(ApplicationConfig config)
 	m_Height = config.Height;
 	m_FrameLimit = config.FrameLimit;
 	m_LimitFrames = config.LimitFrameRate;
-	m_State = new Platform::PlatformState();
+	m_State = CreateRef<Platform::PlatformState>();
 
 	{
 		bool success = Cobalt::Platform::Startup(m_State, config.ApplicationName, config.PositionX, config.PositionY, m_Width, m_Height);
@@ -93,7 +93,6 @@ void Cobalt::Application::Run()
 
 	Renderer::Shutdown();
 	Platform::Shutdown(m_State);
-	delete m_State;
 }
 
 void Cobalt::Application::OnEvent(Event& e)

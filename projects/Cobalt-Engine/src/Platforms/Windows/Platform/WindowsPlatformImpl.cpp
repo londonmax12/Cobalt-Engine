@@ -146,7 +146,7 @@ bool Cobalt::Platform::Init()
 	return true;
 }
 
-bool Cobalt::Platform::Startup(PlatformState* state, const char* applicationName, int positionX, int positionY, int width, int height)
+bool Cobalt::Platform::Startup(Ref<Platform::PlatformState> state, const char* applicationName, int positionX, int positionY, int width, int height)
 {
 	state->internalState = malloc(sizeof(WindowsInternalState));
 	WindowsInternalState* internalState = (WindowsInternalState*)&state->internalState;
@@ -223,7 +223,7 @@ bool Cobalt::Platform::Startup(PlatformState* state, const char* applicationName
 	return true;
 }
 
-void Cobalt::Platform::Shutdown(PlatformState* state)
+void Cobalt::Platform::Shutdown(Ref<Platform::PlatformState> state)
 {
 	WindowsInternalState* internalState = (WindowsInternalState*)state->internalState;
 	if (internalState == nullptr) {
@@ -235,7 +235,7 @@ void Cobalt::Platform::Shutdown(PlatformState* state)
 	}
 }
 
-bool Cobalt::Platform::PumpMessages(PlatformState* state)
+bool Cobalt::Platform::PumpMessages(Ref<Platform::PlatformState> state)
 {
     MSG msg;
 	while (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE))

@@ -6,6 +6,7 @@
 
 namespace Cobalt {
 	class VulkanDevice;
+	class VulkanSwapchain;
 
 	struct VulkanState {
 		VkInstance Instance = nullptr;
@@ -14,13 +15,21 @@ namespace Cobalt {
 		VkAllocationCallbacks* Allocator = nullptr;
 
 		Ref<VulkanDevice> Device = nullptr;
+		Ref<VulkanSwapchain> Swapchain = nullptr;
+
+		int FramebufferWidth = 0;
+		int FramebufferHeight = 0;
+
+		int ImageIndex = 0;
+		int CurrentFrame = 0;
+
+		bool RecreatingSwapchain = false;
 	};
+
 	struct VulkanSwapchainSupportInfo
 	{
-		VkSurfaceCapabilitiesKHR Capibilities;
-		uint32_t FormatCount;
-		VkSurfaceFormatKHR* Formats;
-		uint32_t PresentModeCount;
-		VkPresentModeKHR* PresentModes;
+		VkSurfaceCapabilitiesKHR Capibilities{};
+		std::vector<VkSurfaceFormatKHR> Formats;
+		std::vector<VkPresentModeKHR> PresentModes;
 	};
 }

@@ -53,6 +53,5 @@ void Cobalt::VulkanMessenger::Shutdown()
     {
         PFN_vkDestroyDebugUtilsMessengerEXT destroyFunction = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(m_State->Instance, "vkDestroyDebugUtilsMessengerEXT");
         destroyFunction(m_State->Instance, m_Messenger, m_State->Allocator);
-        COBALT_DEBUG("Destroyed Vulkan messenger");
     }
 }

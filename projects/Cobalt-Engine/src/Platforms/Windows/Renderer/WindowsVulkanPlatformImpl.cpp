@@ -14,8 +14,8 @@ void Cobalt::Platform::GetVulkanExtensions(std::vector<const char*>* out)
 	out->push_back("VK_KHR_win32_surface");
 }
 
-VkSurfaceKHR Cobalt::Platform::CreateVulkanSurface(PlatformState* platformState, Ref<VulkanState> vulkanState) {
-	WindowsInternalState* state = (WindowsInternalState*)platformState;
+VkSurfaceKHR Cobalt::Platform::CreateVulkanSurface(Ref<Platform::PlatformState> platformState, Ref<VulkanState> vulkanState) {
+	WindowsInternalState* state = (WindowsInternalState*)platformState.get();
 
 	if (!state)
 	{
@@ -32,7 +32,7 @@ VkSurfaceKHR Cobalt::Platform::CreateVulkanSurface(PlatformState* platformState,
 		return NULL;
 	}
 
-	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{ VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR };
+	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo { VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR };
 
 	surfaceCreateInfo.hinstance = GetModuleHandle(nullptr);
 	surfaceCreateInfo.hwnd = state->hwnd;

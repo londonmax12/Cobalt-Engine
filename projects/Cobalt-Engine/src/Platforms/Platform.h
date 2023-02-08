@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Application/Core.h"
+
 #include <stdint.h>
 
 namespace Cobalt {
@@ -11,10 +13,10 @@ namespace Cobalt {
 		};
 		bool Init();
 
-		bool Startup(PlatformState* state, const char* applicationName, int positionX, int positionY, int width, int height);
-		void Shutdown(PlatformState* state);
+		bool Startup(Ref<PlatformState> state, const char* applicationName, int positionX, int positionY, int width, int height);
+		void Shutdown(Ref<PlatformState> state);
 
-		bool PumpMessages(PlatformState* state);
+		bool PumpMessages(Ref<PlatformState> state);
 
 		void* Allocate(uint32_t size, bool aligned);
 		void Free(void* block, bool aligned);

@@ -42,7 +42,7 @@ namespace Cobalt {
 		bool m_Running = false;
 		bool m_Suspended = false;
 
-		Platform::PlatformState* m_State = nullptr;
+		Ref<Platform::PlatformState> m_State;
 
 		int m_Width = 0;
 		int m_Height = 0;

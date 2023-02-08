@@ -4,7 +4,10 @@
 #include "Platforms/Vulkan/Utility/VulkanUtility.h"
 #include "Platforms/Vulkan/VulkanPlatform.h"
 
-bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::PlatformState* platformState, int width, int height)
+#include "Platforms/Vulkan/Renderer/VulkanDevice.h"
+#include "Platforms/Vulkan/Renderer/VulkanSwapchain.h"
+
+bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platform::PlatformState> platformState, int width, int height)
 {
     m_State = CreateRef<VulkanState>();
 
@@ -81,9 +84,14 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::
     COBALT_INFO("Created Vulkan surface");
 
     m_State->Device = CreateRef<VulkanDevice>();
-    if (!m_State->Device->Init(m_State->Instance, m_State->Surface, m_State->Allocator))
+    if (!m_State->Device->Init(m_State))
         return false;
     COBALT_INFO("Created Vulkan device");
+
+    m_State->Swapchain = CreateRef<VulkanSwapchain>();
+    if (!m_State->Swapchain->Init(m_State))
+        return false;
+    COBALT_INFO("Created Vulkan swapcahin");
 
     COBALT_INFO("Vulkan renderer backend initialized");
 
@@ -92,8 +100,20 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Platform::
 
 void Cobalt::VulkanRendererBackend::Shutdown()
 {
+    m_State->Swapchain->Shutdown();
+    COBALT_INFO("Destroyed Vulkan swapchain");
+
+    m_State->Device->Shutdown();
+    COBALT_INFO("Destroyed Vulkan device");
+       
+    if (m_State->Surface) {
+        vkDestroySurfaceKHR(m_State->Instance, m_State->Surface, m_State->Allocator);
+        COBALT_INFO("Destroyed Vulkan surface");
+    }
+
 #ifdef COBALT_DEBUG_MODE
     m_Debugger->Shutdown();
+    COBALT_DEBUG("Destroyed Vulkan messager");
 #endif
 
     if (m_State->Instance)

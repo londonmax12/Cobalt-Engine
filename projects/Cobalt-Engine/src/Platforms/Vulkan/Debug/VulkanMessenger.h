@@ -12,7 +12,7 @@ namespace Cobalt {
 		bool Init(Ref<VulkanState> state);
 		void Shutdown();
 	private:
-		VkDebugUtilsMessengerEXT m_Messenger;
+		VkDebugUtilsMessengerEXT m_Messenger = nullptr;
 		Ref<VulkanState> m_State;
 	};
 

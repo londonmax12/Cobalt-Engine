@@ -146,3 +146,18 @@ bool Cobalt::VulkanCheckResult(VkResult result, int line, const char* file)
         return true;
     }
 }
+
+int Cobalt::VulkanFindMemoryIndex(int typeFilter, int propertyFlags, VkPhysicalDevice physicalDevice)
+{
+    VkPhysicalDeviceMemoryProperties memoryProperties;
+    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+
+    for (int i = 0; i < memoryProperties.memoryTypeCount; i++) {
+        if (typeFilter & (1 << i) && (memoryProperties.memoryTypes[i].propertyFlags & propertyFlags) == propertyFlags) {
+            return i;
+        }
+    }
+
+    COBALT_WARN("Unable to find suitable memory type");
+    return -1;
+}

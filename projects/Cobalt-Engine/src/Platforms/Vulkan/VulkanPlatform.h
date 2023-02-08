@@ -10,6 +10,6 @@
 namespace Cobalt {
 	namespace Platform {
 		void GetVulkanExtensions(std::vector<const char*>* out);
-		VkSurfaceKHR CreateVulkanSurface(PlatformState* platformState, Ref<VulkanState> vulkanState);
+		VkSurfaceKHR CreateVulkanSurface(Ref<Platform::PlatformState> platformState, Ref<VulkanState> vulkanState);
 	}
 }

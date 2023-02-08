@@ -28,12 +28,26 @@ namespace Cobalt {
 		VkPhysicalDevice m_PhysicalDevice;
 		VkDevice m_LogicalDevice;
 
+		VkFormat m_DepthFormat = VK_FORMAT_UNDEFINED;
 	public:
-		bool Init(VkInstance instance, VkSurfaceKHR surface, VkAllocationCallbacks* allocator);
+		bool Init(Ref<VulkanState> state);
 		void Shutdown();
 
 		operator VkDevice() const { return m_LogicalDevice; }
 		operator VkPhysicalDevice() const { return m_PhysicalDevice; }
+
+		VkDevice const GetLogicalDevice() { return m_LogicalDevice; }
+		VkPhysicalDevice const GetPhysicalDevice() { return m_PhysicalDevice; }
+
+		Ref<VulkanSwapchainSupportInfo> GetSwapchainSupportInfo() { return m_SwapchainInfo; }
+		
+		void RequerySwapchainSupport();
+
+		int GetGraphicsQueueIndex() { return m_GraphicsIndex; }
+		int GetPresentQueueIndex() { return m_PresentIndex; }
+		int GetTransferQueueIndex() { return m_TransferIndex; }
+
+		VkFormat GetDepthFormat() { return m_DepthFormat; }
 	private:
 		bool DeviceMeetsRequirements(VkPhysicalDevice device,
 			VkSurfaceKHR surface,
@@ -45,8 +59,11 @@ namespace Cobalt {
 
 		void QuerySwapchainSupportInfo(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VulkanSwapchainSupportInfo* outInfo);
 
-		VkInstance m_Instance;
-		VulkanSwapchainSupportInfo m_SwapchainInfo;
+		bool DetectDepthFormat();;
+
+		Ref<VulkanState> m_State;
+		
+		Ref<VulkanSwapchainSupportInfo> m_SwapchainInfo;
 
 		int m_GraphicsIndex;
 		int m_PresentIndex;
@@ -55,7 +72,5 @@ namespace Cobalt {
 		VkPhysicalDeviceProperties m_Properties;
 		VkPhysicalDeviceFeatures m_Features;
 		VkPhysicalDeviceMemoryProperties m_Memory;
-
-		VkAllocationCallbacks* m_Allocator;
 	};
 }

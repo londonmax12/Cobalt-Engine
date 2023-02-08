@@ -18,7 +18,7 @@ namespace Cobalt {
 		RendererConfig(RendererBackendType backend) : Backend(backend) {}
 
 		RendererBackendType Backend = RENDERER_BACKEND_NONE;
-		Platform::PlatformState* State = nullptr;
+		Ref<Platform::PlatformState> State = nullptr;
 		int Width = 1600;
 		int Height = 900;
 		const char* ApplicationName = "Cobalt Application";

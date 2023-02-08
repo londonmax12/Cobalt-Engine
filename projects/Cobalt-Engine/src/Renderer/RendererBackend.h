@@ -9,7 +9,7 @@ namespace Cobalt {
 	class RendererBackend
 	{
 	public:
-		virtual bool Init(const char* applicationName, Platform::PlatformState* platformState, int width, int height) = 0;
+		virtual bool Init(const char* applicationName, Ref<Platform::PlatformState> platformState, int width, int height) = 0;
 		virtual void Shutdown() = 0;
 		virtual void Resized(int width, int height) = 0;
 

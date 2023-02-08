@@ -6,12 +6,11 @@
 
 #include "Platforms/Vulkan/VulkanStructs.h"
 #include "Platforms/Vulkan/Debug/VulkanMessenger.h"
-#include "Platforms/Vulkan/Renderer/VulkanDevice.h"
 
 namespace Cobalt {
 	class VulkanRendererBackend : public RendererBackend {
 	public:
-		bool Init(const char* applicationName, Platform::PlatformState* platformState, int width, int height);
+		bool Init(const char* applicationName, Ref<Platform::PlatformState> platformState, int width, int height);
 		void Shutdown();
 		void Resized(int width, int height);
 

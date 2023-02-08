@@ -5,6 +5,7 @@
 #include "Logging/Assert.h"
 #include "Input/Input.h"
 #include "Event/Event.h"
+#include "Memory/Memory.h"
 
 extern Cobalt::Application* Cobalt::CreateApplication();
 
@@ -30,5 +31,8 @@ int main(int argc, char** argv) {
 	}
 	COBALT_INFO("Created application");
 	app->Run();
-	delete app;
+
+#ifdef COBALT_DEBUG_MODE
+	Cobalt::Memory::PrintPerformance();
+#endif
 }

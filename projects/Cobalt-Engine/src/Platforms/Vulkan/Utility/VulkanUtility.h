@@ -15,4 +15,6 @@ namespace Cobalt {
 	const char* VulkanResultToString(VkResult result, bool getExtended);
 
 	bool VulkanCheckResult(VkResult result, int line, const char* file);
+
+	int VulkanFindMemoryIndex(int typeFilter, int propertyFlags, VkPhysicalDevice physicalDevice);
 }
