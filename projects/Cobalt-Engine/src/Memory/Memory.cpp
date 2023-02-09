@@ -7,19 +7,19 @@ const char* Cobalt::Memory::MemoryTypeToString(MemoryType type)
 	switch (type) {
 		case MemoryType::MEMORY_TYPE_OTHER:
 		{
-			return "Other:            ";
+			return "Other";
 		}
 		case MemoryType::MEMORY_TYPE_RENDERER:
 		{
-			return "Renderer:         ";
+			return "Renderer";
 		}
 		case MemoryType::MEMORY_TYPE_POOL_ALLOCATOR:
 		{
-			return "Pool Allocator:   ";
+			return "Pool Allocator";
 		}
 		default:
 		{
-			return "Unknown:          ";
+			return "Unknown";
 		}
 	}
 }
@@ -63,7 +63,7 @@ char* Cobalt::Memory::PrintPerformance()
 	const float mb = 1048576.f;
 	const float gb = 1073741824.f;
 
-	COBALT_INFO("====== System Memory Usage ======");
+	COBALT_INFO("System Memory Usage ({})", m_Stats.total);
 	for (int i = 0; i < MemoryType::MEMORY_MAX_TYPES; i++) {
 		const char* unit = "B";
 		float amount = 0.0f;
@@ -83,9 +83,7 @@ char* Cobalt::Memory::PrintPerformance()
 			amount = (float)m_Stats.typeAllocations[i];
 		}
 		const char* label = MemoryTypeToString((MemoryType)i);
-		COBALT_INFO("{}{}", label, amount);
-		
+		COBALT_INFO("\t| {}: {}", label, amount);	
 	}
-	COBALT_INFO("=================================");
 	return nullptr;
 }

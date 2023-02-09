@@ -1,11 +1,11 @@
 #include "cobaltpch.h"
 #include "VulkanRendererBackend.h"
 
-#include "Platforms/Vulkan/Utility/VulkanUtility.h"
 #include "Platforms/Vulkan/VulkanPlatform.h"
-
+#include "Platforms/Vulkan/Utility/VulkanUtility.h"
 #include "Platforms/Vulkan/Renderer/VulkanDevice.h"
 #include "Platforms/Vulkan/Renderer/VulkanSwapchain.h"
+#include "Platforms/Vulkan/Renderer/VulkanRenderPass.h"
 
 bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platform::PlatformState> platformState, int width, int height)
 {
@@ -93,6 +93,11 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platfo
         return false;
     COBALT_INFO("Created Vulkan swapcahin");
 
+    m_State->RenderPass = CreateRef<VulkanRenderPass>();
+    if (!m_State->RenderPass->Init(m_State, { 0,0 }, { m_State->FramebufferWidth, m_State->FramebufferHeight }, { 0.8f,0.3f,0.2f, 1.f }, 1.f, 0))
+        return false;
+    COBALT_INFO("Created Vulkan render pass");
+
     COBALT_INFO("Vulkan renderer backend initialized");
 
     return true;
@@ -100,6 +105,9 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platfo
 
 void Cobalt::VulkanRendererBackend::Shutdown()
 {
+    m_State->RenderPass->Shutdown();
+    COBALT_INFO("Destroyed Vulkan render pass");
+
     m_State->Swapchain->Shutdown();
     COBALT_INFO("Destroyed Vulkan swapchain");
 

@@ -9,7 +9,7 @@ namespace Cobalt {
 	class VulkanSwapchain {
 	private:
 		VkSwapchainKHR m_Swapchain;
-
+		VkSurfaceFormatKHR m_ImageFormat;
 	public:
 		bool Init(Ref<VulkanState> state);
 		void Shutdown();
@@ -23,12 +23,13 @@ namespace Cobalt {
 
 		operator VkSwapchainKHR() { return m_Swapchain; }
 
+		VkSurfaceFormatKHR GetFormat() { return m_ImageFormat; }
+
 	private:
 		void Destroy();
 
 		unsigned int m_MaxFramesInFlight;
 
-		VkSurfaceFormatKHR m_ImageFormat;
 		std::vector<VkImage> m_Images;
 		std::vector<VkImageView> m_ImageViews;
 

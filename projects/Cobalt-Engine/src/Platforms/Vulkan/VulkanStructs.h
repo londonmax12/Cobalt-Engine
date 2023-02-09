@@ -7,6 +7,7 @@
 namespace Cobalt {
 	class VulkanDevice;
 	class VulkanSwapchain;
+	class VulkanRenderPass;
 
 	struct VulkanState {
 		VkInstance Instance = nullptr;
@@ -16,6 +17,7 @@ namespace Cobalt {
 
 		Ref<VulkanDevice> Device = nullptr;
 		Ref<VulkanSwapchain> Swapchain = nullptr;
+		Ref<VulkanRenderPass> RenderPass = nullptr;
 
 		int FramebufferWidth = 0;
 		int FramebufferHeight = 0;
