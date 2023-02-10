@@ -64,7 +64,8 @@ void Cobalt::Application::Run()
 
 		double delta = currTime - lastTime;
 		lastTime = currTime;
-		OnUpdate(DeltaTime((float)delta));
+
+		m_LayerStack.OnUpdate(DeltaTime((float)delta));
 
 		double frameEnd = Platform::GetAbsTime();
 		double frameTime = frameEnd - frameStart;
@@ -101,10 +102,31 @@ void Cobalt::Application::OnEvent(Event& e)
 	dispatcher.Dispatch<ApplicationCloseEvent>(COBALT_BIND_EVENT_FN(OnAppClose));
 
 	Renderer::GetInstance()->OnEvent(e);
+	m_LayerStack.OnEvent(e);
 }
 
 bool Cobalt::Application::OnAppClose(ApplicationCloseEvent& ev)
 {
 	m_Running = false;
 	return true;
+}
+
+void Cobalt::Application::PushLayer(Ref<Layer> layer)
+{
+	m_LayerStack.PushLayer(layer);
+}
+
+void Cobalt::Application::PushOverlay(Ref<Layer> overlay)
+{
+	m_LayerStack.PushOverlay(overlay);
+}
+
+void Cobalt::Application::PopLayer(Ref<Layer> layer)
+{
+	m_LayerStack.PopLayer(layer);
+}
+
+void Cobalt::Application::PopOverlay(Ref<Layer> overlay)
+{
+	m_LayerStack.PopOverlay(overlay);
 }

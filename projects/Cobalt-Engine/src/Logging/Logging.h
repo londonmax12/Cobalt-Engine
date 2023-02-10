@@ -6,6 +6,7 @@
 #include "Math/Vertex.h"
 #include "Platforms/Platform.h"
 #include "Time/DeltaTime.h"
+#include "Event/Event.h"
 
 #define LOG_WARN_ENABLED 1
 #define LOG_INFO_ENABLED 1
@@ -115,7 +116,6 @@ struct std::formatter<Cobalt::DeltaTime> : std::formatter<std::string> {
 			std::format("{}", (float)t), ctx);
 	}
 };
-
 
 namespace Cobalt {
 	class Logger {

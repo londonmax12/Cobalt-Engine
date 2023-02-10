@@ -6,6 +6,7 @@
 // APPLICATION
 #include "Application/Application.h"
 #include "Application/Core.h"
+#include "Application/Layer.h"
 
 // LOGGING
 #include "Logging/Logging.h"

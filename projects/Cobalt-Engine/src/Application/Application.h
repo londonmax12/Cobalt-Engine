@@ -3,6 +3,8 @@
 #include "Core.h"
 #include "Event/ApplicationEvents.h"
 #include "Time/DeltaTime.h"
+#include "Application/Layer.h"
+#include "Application/LayerStack.h"
 
 namespace Cobalt {
 	struct ApplicationConfig {
@@ -30,12 +32,16 @@ namespace Cobalt {
 		void Run();
 		static Application* GetInstance() { return m_Instance; }
 
-		virtual void OnUpdate(DeltaTime dt) = 0;
-
 		bool IsInitialized() { return m_Instance != nullptr; }
 
 		void OnEvent(Event& e);
 		bool OnAppClose(ApplicationCloseEvent& ev);
+
+		void PushLayer(Ref<Layer> layer);
+		void PushOverlay(Ref<Layer> overlay);
+
+		void PopLayer(Ref<Layer> layer);
+		void PopOverlay(Ref<Layer> overlay);
 	private:
 		inline static Application* m_Instance = nullptr;
 
@@ -49,6 +55,8 @@ namespace Cobalt {
 
 		bool m_LimitFrames = false;
 		int m_FrameLimit = 60;
+
+		LayerStack m_LayerStack;
 	};
 
 	// Defined by client not engine

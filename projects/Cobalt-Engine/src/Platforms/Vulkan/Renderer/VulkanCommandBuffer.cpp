@@ -26,6 +26,8 @@ bool Cobalt::VulkanCommandBuffer::Allocate(Ref<VulkanState> state, VkCommandPool
 	}
 
 	m_CurrentState = COMMAND_BUFFER_READY;
+
+	return true;
 }
 
 void Cobalt::VulkanCommandBuffer::Free(VkCommandPool pool)

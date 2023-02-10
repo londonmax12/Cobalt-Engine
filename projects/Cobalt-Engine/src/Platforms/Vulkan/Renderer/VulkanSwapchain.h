@@ -21,7 +21,7 @@ namespace Cobalt {
 		
 		bool GetNextImageIndex(unsigned int timeoutMs, VkSemaphore imageAvailableSemaphore, VkFence fence, int* outImageIndex);
 
-		int GetImageCount() { return m_Images.size(); }
+		int GetImageCount() { return (int)m_Images.size(); }
 
 		bool Present(VkQueue graphicsQueue, VkQueue presentQueue, VkSemaphore renderCompleteSemaphore, int presentImageIndex);
 

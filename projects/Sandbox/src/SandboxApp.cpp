@@ -1,14 +1,13 @@
 #include "Cobalt.h"
 
+#include "SandboxLayer.h"
+
 class SandboxApp : public Cobalt::Application {
 public:
 	SandboxApp(Cobalt::ApplicationConfig conf)
 		: Cobalt::Application(conf)
 	{
-
-	}
-
-	void OnUpdate(Cobalt::DeltaTime deltaTime) {
+		PushLayer(Cobalt::CreateRef<SandboxLayer>());
 	}
 };
 

@@ -78,7 +78,7 @@ bool Cobalt::VulkanRenderPass::Init(Ref<VulkanState> state, Vector2 renderPos, V
 
     VkRenderPassCreateInfo renderpassCreateInfo{};
     renderpassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    renderpassCreateInfo.attachmentCount = attachmentDescriptions.size();
+    renderpassCreateInfo.attachmentCount = (uint32_t)attachmentDescriptions.size();
     renderpassCreateInfo.pAttachments = attachmentDescriptions.data();
     renderpassCreateInfo.subpassCount = 1;
     renderpassCreateInfo.pSubpasses = &subpass;
@@ -106,10 +106,10 @@ void Cobalt::VulkanRenderPass::Begin(Ref<VulkanCommandBuffer> commandBuffer, VkF
     beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     beginInfo.renderPass = m_RenderPass;
     beginInfo.framebuffer = framebuffer;
-    beginInfo.renderArea.offset.x = m_RenderPosition.x;
-    beginInfo.renderArea.offset.y = m_RenderPosition.y;
-    beginInfo.renderArea.extent.width = m_RenderSize.x;
-    beginInfo.renderArea.extent.height = m_RenderSize.y;
+    beginInfo.renderArea.offset.x = (uint32_t)m_RenderPosition.x;
+    beginInfo.renderArea.offset.y = (uint32_t)m_RenderPosition.y;
+    beginInfo.renderArea.extent.width = (uint32_t)m_RenderSize.x;
+    beginInfo.renderArea.extent.height = (uint32_t)m_RenderSize.y;
 
     std::vector<VkClearValue> clearValues(2);
 

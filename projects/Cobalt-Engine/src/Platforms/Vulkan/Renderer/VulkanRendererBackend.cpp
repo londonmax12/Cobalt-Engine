@@ -32,7 +32,7 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platfo
 
     VkInstanceCreateInfo instanceCreateInfo{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
     instanceCreateInfo.pApplicationInfo = &appInfo;
-    instanceCreateInfo.enabledExtensionCount = requiredExtensions.size();
+    instanceCreateInfo.enabledExtensionCount = (uint32_t)requiredExtensions.size();
     instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
     instanceCreateInfo.enabledLayerCount = 0;
     instanceCreateInfo.ppEnabledLayerNames = 0;
@@ -62,7 +62,7 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platfo
     }
     COBALT_DEBUG("All required validation layers are present");
 
-    instanceCreateInfo.enabledLayerCount = requiredLayers.size();
+    instanceCreateInfo.enabledLayerCount = (uint32_t)requiredLayers.size();
     instanceCreateInfo.ppEnabledLayerNames = requiredLayers.data();
 #endif
 

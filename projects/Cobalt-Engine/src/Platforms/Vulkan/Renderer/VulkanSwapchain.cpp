@@ -21,7 +21,7 @@ void Cobalt::VulkanSwapchain::Shutdown()
 
 void Cobalt::VulkanSwapchain::Create(int width, int height)
 {
-	VkExtent2D swapchainExtent = { width, height };
+	VkExtent2D swapchainExtent = { (uint32_t)width, (uint32_t)height };
 	m_MaxFramesInFlight = 2;
 
 	Ref<VulkanSwapchainSupportInfo> supportInfo = m_State->Device->GetSwapchainSupportInfo();
@@ -170,6 +170,7 @@ bool Cobalt::VulkanSwapchain::GetNextImageIndex(unsigned int timeoutMs, VkSemaph
 		if (!VK_CHECK(result))
 			return false;
 	}
+	return true;
 }
 
 bool Cobalt::VulkanSwapchain::Present(VkQueue graphicsQueue, VkQueue presentQueue, VkSemaphore renderCompleteSemaphore, int presentImageIndex)
@@ -192,6 +193,7 @@ bool Cobalt::VulkanSwapchain::Present(VkQueue graphicsQueue, VkQueue presentQueu
 			return false;
 	}
 
+	return true;
 }
 
 void Cobalt::VulkanSwapchain::Destroy()
