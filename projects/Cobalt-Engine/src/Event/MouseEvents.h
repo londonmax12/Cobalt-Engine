@@ -69,4 +69,26 @@ namespace Cobalt {
 	private:
 		float m_XOffset, m_YOffset;
 	};
+
+	class MouseMovedEvent : public Event
+	{
+	public:
+		MouseMovedEvent(int x, float y)
+			: m_X(y), m_Y(y) {}
+
+		float GetX() const { return m_X; }
+		float GetY() const { return m_Y; }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "[MouseMovedEvent](" << GetX() << ", " << GetY() << ")";
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(EventMouseMove)
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
+	private:
+		float m_X, m_Y;
+	};
 }

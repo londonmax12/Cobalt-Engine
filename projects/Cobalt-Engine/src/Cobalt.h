@@ -20,6 +20,7 @@
 #include "Event/ApplicationEvents.h"
 #include "Event/SurfaceEvents.h"
 #include "Event/MouseEvents.h"
+#include "Event/KeyEvents.h"
 
 // INPUT
 #include "Input/Input.h"

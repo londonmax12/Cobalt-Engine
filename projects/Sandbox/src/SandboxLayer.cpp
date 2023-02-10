@@ -2,6 +2,7 @@
 
 #include "Logging/Logging.h"
 #include "Event/Event.h"
+#include "Event/KeyEvents.h"
 
 void SandboxLayer::OnAttach()
 {

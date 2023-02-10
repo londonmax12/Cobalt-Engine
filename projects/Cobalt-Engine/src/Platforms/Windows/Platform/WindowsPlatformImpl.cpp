@@ -14,6 +14,8 @@
 
 #include "Application/Application.h"
 
+#include "Event/KeyEvents.h"
+
 namespace Cobalt {
 	static double g_ClockFrequency;
 	static LARGE_INTEGER g_StartTime;
@@ -58,6 +60,14 @@ namespace Cobalt {
 		case WM_SYSKEYUP:
 		{
 			bool pressed = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
+			if (pressed) {
+				KeydownEvent ev = KeydownEvent(PlatformInput::GetKeyCode(wParam));
+				EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
+			}
+			else {
+				KeyupEvent ev =  KeyupEvent(PlatformInput::GetKeyCode(wParam));
+				EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
+			}
 			break;
 		}
 
@@ -65,6 +75,9 @@ namespace Cobalt {
 		{
 			int x = GET_X_LPARAM(lParam);
 			int y = GET_Y_LPARAM(lParam);
+
+			MouseMovedEvent ev = MouseMovedEvent(x, y);
+			EventSystem::GetInstance()->DispatchEvent(static_cast<Event&>(ev));
 			break;
 		}
 
