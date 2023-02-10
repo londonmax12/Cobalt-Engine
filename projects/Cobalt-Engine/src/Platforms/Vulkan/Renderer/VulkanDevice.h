@@ -29,6 +29,8 @@ namespace Cobalt {
 		VkDevice m_LogicalDevice;
 
 		VkFormat m_DepthFormat = VK_FORMAT_UNDEFINED;
+
+		VkCommandPool m_GraphicsCommandPool;
 	public:
 		bool Init(Ref<VulkanState> state);
 		void Shutdown();
@@ -41,6 +43,8 @@ namespace Cobalt {
 
 		Ref<VulkanSwapchainSupportInfo> GetSwapchainSupportInfo() { return m_SwapchainInfo; }
 		
+		VkCommandPool GetGraphicsCommandPool() { return m_GraphicsCommandPool; }
+
 		void RequerySwapchainSupport();
 
 		int GetGraphicsQueueIndex() { return m_GraphicsIndex; }
@@ -49,6 +53,10 @@ namespace Cobalt {
 
 		VkFormat GetDepthFormat() { return m_DepthFormat; }
 	private:
+		VkQueue m_GraphicsQueue;
+		VkQueue m_PresentQueue;
+		VkQueue m_TransferQueue;
+
 		bool DeviceMeetsRequirements(VkPhysicalDevice device,
 			VkSurfaceKHR surface,
 			const VkPhysicalDeviceProperties* properties,

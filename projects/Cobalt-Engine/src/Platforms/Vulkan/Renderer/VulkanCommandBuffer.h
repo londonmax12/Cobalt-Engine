@@ -2,6 +2,9 @@
 
 #include <vulkan/vulkan.h>
 
+#include "Platforms/Vulkan/VulkanStructs.h"
+#include "Application/Core.h"
+
 namespace Cobalt {
 	enum CommandBufferState{
 		COMMAND_BUFFER_READY,
@@ -15,15 +18,23 @@ namespace Cobalt {
 	class VulkanCommandBuffer {
 	private:
 		VkCommandBuffer m_CommandBuffer;
-		CommandBufferState m_CurrentState;
+		CommandBufferState m_CurrentState = COMMAND_BUFFER_NOT_ALLOCATED;
+		Ref<VulkanState> m_State;
 
 	public:
-		bool Init();
-		void Shutdown();
-
 		VkCommandBuffer GetCommandBuffer() { return m_CommandBuffer; }
 
 		void SetState(CommandBufferState state) { m_CurrentState = state; }
-	private:
+
+		bool Allocate(Ref<VulkanState> state, VkCommandPool pool, bool isPrimary);
+		void Free(VkCommandPool pool);
+
+		bool AllocateBeginSingleUse(Ref<VulkanState> state, VkCommandPool pool);
+		void EndSingleUse(VkCommandPool pool, VkQueue queue);
+
+		void Begin(bool isSingleUse, bool isRenderPassContinue, bool isSimultaneous);
+		void End();
+
+		void Reset();
 	};
 }

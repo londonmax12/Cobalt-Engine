@@ -10,6 +10,8 @@ namespace Cobalt {
 	private:
 		VkSwapchainKHR m_Swapchain;
 		VkSurfaceFormatKHR m_ImageFormat;
+
+		std::vector<VkImage> m_Images;
 	public:
 		bool Init(Ref<VulkanState> state);
 		void Shutdown();
@@ -18,6 +20,8 @@ namespace Cobalt {
 		void Recreate(int width, int height);
 		
 		bool GetNextImageIndex(unsigned int timeoutMs, VkSemaphore imageAvailableSemaphore, VkFence fence, int* outImageIndex);
+
+		int GetImageCount() { return m_Images.size(); }
 
 		bool Present(VkQueue graphicsQueue, VkQueue presentQueue, VkSemaphore renderCompleteSemaphore, int presentImageIndex);
 
@@ -30,7 +34,6 @@ namespace Cobalt {
 
 		unsigned int m_MaxFramesInFlight;
 
-		std::vector<VkImage> m_Images;
 		std::vector<VkImageView> m_ImageViews;
 
 		Ref<VulkanImage> m_DepthAttachment;

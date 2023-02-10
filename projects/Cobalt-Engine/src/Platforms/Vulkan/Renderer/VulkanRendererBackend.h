@@ -23,5 +23,7 @@ namespace Cobalt {
 #ifdef COBALT_DEBUG_MODE
 		Ref<VulkanMessenger> m_Debugger;
 #endif
+
+		void CreateCommandBuffers();
 	};
 }

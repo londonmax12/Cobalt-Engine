@@ -150,11 +150,25 @@ bool Cobalt::VulkanDevice::Init(Ref<VulkanState> state)
 		COBALT_FATAL("Failed to detect Vulkan depth format");
 		return false;
 	}
+
+	vkGetDeviceQueue(m_LogicalDevice, m_GraphicsIndex, 0, &m_GraphicsQueue);
+	vkGetDeviceQueue(m_LogicalDevice, m_PresentIndex, 0, &m_PresentQueue);
+	vkGetDeviceQueue(m_LogicalDevice, m_TransferIndex, 0, &m_TransferQueue);
+	COBALT_INFO("Device queues obtained");
+
+	VkCommandPoolCreateInfo commandPoolCreateInfo{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO };
+	commandPoolCreateInfo.queueFamilyIndex = m_GraphicsIndex;
+	commandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+	vkCreateCommandPool(m_LogicalDevice, &commandPoolCreateInfo, m_State->Allocator, &m_GraphicsCommandPool);
+	COBALT_INFO("Device graphics command pool created");
 	return true;
 }
 
 void Cobalt::VulkanDevice::Shutdown()
 {
+	if (m_GraphicsCommandPool)
+		vkDestroyCommandPool(m_LogicalDevice, m_GraphicsCommandPool, m_State->Allocator);
+
 	if (m_LogicalDevice)
 		vkDestroyDevice(m_LogicalDevice, m_State->Allocator);
 }

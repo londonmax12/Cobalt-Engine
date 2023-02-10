@@ -98,6 +98,8 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platfo
         return false;
     COBALT_INFO("Created Vulkan render pass");
 
+    CreateCommandBuffers();
+
     COBALT_INFO("Vulkan renderer backend initialized");
 
     return true;
@@ -142,4 +144,19 @@ bool Cobalt::VulkanRendererBackend::BeginFrame(DeltaTime dt)
 bool Cobalt::VulkanRendererBackend::EndFrame(DeltaTime dt)
 {
     return true;
+}
+
+void Cobalt::VulkanRendererBackend::CreateCommandBuffers()
+{
+    if (m_State->GraphicsCommandBuffers.size())
+        return;
+
+    m_State->GraphicsCommandBuffers = std::vector<VulkanCommandBuffer>(m_State->Swapchain->GetImageCount());
+
+    for (int i = 0; i < m_State->Swapchain->GetImageCount(); i++) {
+        if (m_State->GraphicsCommandBuffers[i].GetCommandBuffer()) {
+            m_State->GraphicsCommandBuffers[i].Free(m_State->Device->GetGraphicsCommandPool());
+        }
+        m_State->GraphicsCommandBuffers[i].Allocate(m_State, m_State->Device->GetGraphicsCommandPool(), true);
+    }
 }
