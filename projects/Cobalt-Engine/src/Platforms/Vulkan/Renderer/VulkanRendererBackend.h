@@ -6,6 +6,7 @@
 
 #include "Platforms/Vulkan/VulkanStructs.h"
 #include "Platforms/Vulkan/Debug/VulkanMessenger.h"
+#include "Platforms/Vulkan/Renderer/VulkanFramebuffer.h"
 
 namespace Cobalt {
 	class VulkanRendererBackend : public RendererBackend {
@@ -24,6 +25,7 @@ namespace Cobalt {
 		Ref<VulkanMessenger> m_Debugger;
 #endif
 
-		void CreateCommandBuffers();
+		bool CreateCommandBuffers();
+		bool CreateSyncObjects();
 	};
 }

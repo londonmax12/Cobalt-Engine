@@ -6,10 +6,13 @@
 #include "Platforms/Vulkan/Renderer/VulkanDevice.h"
 #include "Platforms/Vulkan/Renderer/VulkanSwapchain.h"
 #include "Platforms/Vulkan/Renderer/VulkanRenderPass.h"
+#include "Platforms/Vulkan/Renderer/VulkanFence.h"
 
 bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platform::PlatformState> platformState, int width, int height)
 {
     m_State = CreateRef<VulkanState>();
+    m_State->FramebufferWidth = width;
+    m_State->FramebufferHeight = height;
 
     VkApplicationInfo appInfo{ VK_STRUCTURE_TYPE_APPLICATION_INFO };
     appInfo.apiVersion = VK_API_VERSION_1_3;
@@ -98,7 +101,20 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platfo
         return false;
     COBALT_INFO("Created Vulkan render pass");
 
-    CreateCommandBuffers();
+    m_State->Swapchain->RegenerateFramebuffers(m_State->RenderPass);
+
+    if (!CreateCommandBuffers()) {
+        COBALT_ERROR("Failed to create Vulkan command buffers");
+        return false;
+    }
+    COBALT_INFO("Created Vulkan command buffers");
+
+    if (!CreateSyncObjects())
+    {
+        COBALT_ERROR("Failed to create Vulkan sync objects");
+        return false;
+    }
+    COBALT_INFO("Created Vulkan semaphores and fences");
 
     COBALT_INFO("Vulkan renderer backend initialized");
 
@@ -107,6 +123,19 @@ bool Cobalt::VulkanRendererBackend::Init(const char* applicationName, Ref<Platfo
 
 void Cobalt::VulkanRendererBackend::Shutdown()
 {
+    vkDeviceWaitIdle(m_State->Device->GetLogicalDevice());
+
+    for (int i = 0; i < m_State->Swapchain->GetMaxFramesInFlight(); i++) {
+        if (m_State->ImageAvailableSemaphores[i]) {
+            vkDestroySemaphore(m_State->Device->GetLogicalDevice(), m_State->ImageAvailableSemaphores[i], m_State->Allocator);
+        }
+        if (m_State->QueueCompleteSemaphores[i]) {
+            vkDestroySemaphore(m_State->Device->GetLogicalDevice(), m_State->QueueCompleteSemaphores[i], m_State->Allocator);
+        }
+        m_State->InFlightFences[i].Shutdown();
+    }
+    COBALT_INFO("Destroyed Vulkan sync objects");
+
     m_State->RenderPass->Shutdown();
     COBALT_INFO("Destroyed Vulkan render pass");
 
@@ -134,6 +163,8 @@ void Cobalt::VulkanRendererBackend::Shutdown()
 
 void Cobalt::VulkanRendererBackend::Resized(int width, int height)
 {
+    m_State->FramebufferWidth = width;
+    m_State->FramebufferHeight = height;
 }
 
 bool Cobalt::VulkanRendererBackend::BeginFrame(DeltaTime dt)
@@ -146,10 +177,10 @@ bool Cobalt::VulkanRendererBackend::EndFrame(DeltaTime dt)
     return true;
 }
 
-void Cobalt::VulkanRendererBackend::CreateCommandBuffers()
+bool Cobalt::VulkanRendererBackend::CreateCommandBuffers()
 {
     if (m_State->GraphicsCommandBuffers.size())
-        return;
+        return false;
 
     m_State->GraphicsCommandBuffers = std::vector<VulkanCommandBuffer>(m_State->Swapchain->GetImageCount());
 
@@ -157,6 +188,43 @@ void Cobalt::VulkanRendererBackend::CreateCommandBuffers()
         if (m_State->GraphicsCommandBuffers[i].GetCommandBuffer()) {
             m_State->GraphicsCommandBuffers[i].Free(m_State->Device->GetGraphicsCommandPool());
         }
-        m_State->GraphicsCommandBuffers[i].Allocate(m_State, m_State->Device->GetGraphicsCommandPool(), true);
+        if (!m_State->GraphicsCommandBuffers[i].Allocate(m_State, m_State->Device->GetGraphicsCommandPool(), true))
+            return false;
+    }
+
+    return true;
+}
+
+bool Cobalt::VulkanRendererBackend::CreateSyncObjects()
+{
+    int maxFramesInFlight = m_State->Swapchain->GetMaxFramesInFlight();
+    m_State->ImageAvailableSemaphores = std::vector<VkSemaphore>(maxFramesInFlight);
+    m_State->QueueCompleteSemaphores = std::vector<VkSemaphore>(maxFramesInFlight);
+    m_State->InFlightFences = std::vector<VulkanFence>(maxFramesInFlight);
+
+    for (int i = 0; i < maxFramesInFlight; i++) {
+        VkSemaphoreCreateInfo semaphoreCreateInfo{VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO};
+        if (!VK_CHECK(vkCreateSemaphore(m_State->Device->GetLogicalDevice(),
+            &semaphoreCreateInfo,
+            m_State->Allocator,
+            &m_State->ImageAvailableSemaphores[i])))
+        {
+            COBALT_ERROR("Failed to make image available semaphore at index: {}", i);
+            return false;
+        }
+        if (!VK_CHECK(vkCreateSemaphore(m_State->Device->GetLogicalDevice(),
+            &semaphoreCreateInfo,
+            m_State->Allocator,
+            &m_State->ImageAvailableSemaphores[i])))
+        {
+            COBALT_ERROR("Failed to make queue complete semaphore at index: {}", i);
+            return false;
+        }
+
+        m_State->InFlightFences[i] = VulkanFence();
+        if (!m_State->InFlightFences[i].Init(m_State, true)) {
+            COBALT_ERROR("Failed to make image in flight fence at index: {}", i);
+            return false;
+        }
     }
 }

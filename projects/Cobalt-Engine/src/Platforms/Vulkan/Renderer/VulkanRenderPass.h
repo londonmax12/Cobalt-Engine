@@ -4,6 +4,7 @@
 #include "Math/Vector.h"
 #include "Platforms/Vulkan/VulkanStructs.h"
 #include "Platforms/Vulkan/Renderer/VulkanCommandBuffer.h"
+#include "Platforms/Vulkan/Renderer/VulkanFramebuffer.h"
 
 #include <vulkan/vulkan.h>
 
@@ -18,12 +19,17 @@ namespace Cobalt {
 	};
 
 	class VulkanRenderPass {
+	private:
+		VkRenderPass m_RenderPass;
+
 	public:
 		bool Init(Ref<VulkanState> state, Vector2 renderPos, Vector2 renderSize, Color clearColor, float depth, int stencil);
 		void Shutdown();
 
 		void Begin(Ref<VulkanCommandBuffer> commandBuffer, VkFramebuffer framebuffer);
 		void End(Ref<VulkanCommandBuffer> commandBuffer);
+
+		VkRenderPass GetRenderPass() { return m_RenderPass; }
 
 	private:
 		Ref<VulkanState> m_State;
@@ -35,7 +41,5 @@ namespace Cobalt {
 		RenderPassState m_CurrentState;
 		float m_Depth;
 		int m_Stencil;
-
-		VkRenderPass m_RenderPass;
 	};
 }

@@ -193,7 +193,22 @@ bool Cobalt::VulkanSwapchain::Present(VkQueue graphicsQueue, VkQueue presentQueu
 			return false;
 	}
 
+	m_State->CurrentFrame = (m_State->CurrentFrame + 1) % m_MaxFramesInFlight;
 	return true;
+}
+
+void Cobalt::VulkanSwapchain::RegenerateFramebuffers(Ref<VulkanRenderPass> renderPass)
+{
+	for (int i = 0; i < GetImageCount(); i++) {
+		std::vector<VkImageView> attachments;
+		attachments.push_back(m_ImageViews[i]);
+		attachments.push_back(m_DepthAttachment->GetView());
+
+		Ref<VulkanFramebuffer> framebuffer = CreateRef<VulkanFramebuffer>();
+		if (!framebuffer->Init(m_State, renderPass, m_State->FramebufferHeight, m_State->FramebufferWidth, attachments))
+			COBALT_ERROR("Failed to create framebuffer");
+		m_Framebuffers.push_back(framebuffer);
+	}
 }
 
 void Cobalt::VulkanSwapchain::Destroy()
@@ -203,6 +218,10 @@ void Cobalt::VulkanSwapchain::Destroy()
 
 	for (auto& i : m_ImageViews) {
 		vkDestroyImageView(m_State->Device->GetLogicalDevice(), i, m_State->Allocator);
+	}
+
+	for (auto& framebuffer : m_Framebuffers) {
+		framebuffer->Shutdown();
 	}
 
 	vkDestroySwapchainKHR(m_State->Device->GetLogicalDevice(), m_Swapchain, m_State->Allocator);

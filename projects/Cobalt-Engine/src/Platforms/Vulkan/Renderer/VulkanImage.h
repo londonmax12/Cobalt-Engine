@@ -20,15 +20,20 @@ namespace Cobalt {
 	};
 
 	class VulkanImage {
+	private:
+		VkImageView m_View{};
+
 	public:
 		bool Init(Ref<VulkanState> state, VulkanImageConfig config);
 		void Shutdown();
 
 		void CreateView(VkFormat format,  VkImageAspectFlags aspectFlags);
+
+		VkImageView GetView() { return m_View; }
 	private:
 		VkImage m_Image{};
 		VkDeviceMemory m_Memory{};
-		VkImageView m_View{};
+
 		int m_Width;
 		int m_Height;
 
